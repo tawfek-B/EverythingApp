@@ -1,0 +1,3 @@
+light blue: #6699CC
+dark blue: #193E6C
+white: #EBEDF2
