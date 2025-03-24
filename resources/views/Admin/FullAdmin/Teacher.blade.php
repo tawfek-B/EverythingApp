@@ -1,128 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
+@props(['teacher' => App\Models\Teacher::findOrFail(session('teacher'))])
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Just+Another+Hand&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Everything App</title>
-
-    <style>
-        body {
-            margin: 0;
-            height: 90vh;
-            background: linear-gradient(45deg, #193E6C 0%, #193E6C 30%, #6699CC 60%, #EBEDF2 70%, #EBEDF2 100%);
-            font-family: Arial, Helvetica, sans-serif;
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Just Another Hand';
-            background-size: 175% 175%;
-            background-repeat: no-repeat;
-            animation: gradientShift 5s infinite;
-        }
-        .TeacherContainer {
-            width: 30%;
-            height: 150%;
-            display: flex;
-            flex-direction: column;
-            border:black 5px solid;
-            /* justify-content: center; */
-            align-items: center;
-            background:#6699CC;
-            justify-content: center;
-            border-radius:15px;
-            margin-bottom:3%;
-        }
-
-        .Teacher {
-            background: #193E6C;
-            padding: 5px 0;
-            margin-top: 2%;
-            font-size: 20px;
-            border: #6699CC 4px solid;
-            color: white;
-            border-radius: 3px;
-            display: flex;
-            flex-direction: row;
-            transition: 0.3s ease;
-        }
-
-        .Teacher:hover {
-            background-color: #6699CC;
-            border: #193E6C 4px solid;
-            border-radius: 10px;
-            color: black;
-        }
-
-        .textContainer {
-            line-height: 50px;
-            z-index: 2;
-            font-size: 30px;
-        }
-
-        .buttonContainer {
-            display: flex;
-            flex-direction: column;
-            align-items:center;
-            column-gap: 5px;
-            row-gap: 10px;
-            height: 25%;
-            width: 15%;
-        }
-
-        .button {
-            border: 1px white solid;
-            text-decoration: none;
-            font-size: 20px;
-            color: black;
-            text-align: center;
-            height:25%;
-            width:50%;
-        }
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    @include('Components.NavBar')
-    <div class="TeacherContainer">
-        <img src="{{ asset('/Web/EVERYTHING1.png') }}" alt="Teacher Image"
-            style="width:125px; height:100px; z-index:2; margin-bottom:5%;"><!-- \server-->
-        <div class="textContainer">
-            Teacher name: {{ App\Models\Teacher::where('id', session('teacher'))->first()->name }}<br>
-            Teacher user name: {{App\Models\Teacher::where('id', session('teacher'))->first()->userName}}<br>
+<x-layout>
+    <x-breadcrumb :links="['Home' => url('/welcome'), 'Teachers' => url('/teacher'), $teacher->name => Request::url()]" align=true />
+    <x-infocard :editLink="'teacher/edit/' . $teacher->id" deleteLink="deleteteacher/{{ $teacher->id }}" :object=$teacher objectType="Teacher"
+        image="{{ asset($teacher->image) }}" name="{{ $teacher->name }}">
+        Teacher Name: {{ $teacher->name }}<br>
+        Teacher User Name: {{ $teacher->userName }}<br>
+        Teacher Number: {{ $teacher->countryCode }} {{ $teacher->number }}<br>
+        @if ($teacher->subjects->count() == 0)
+            Subjects: none
+            <br>
+        @elseif($teacher->subjects->count() == 1)
+            Subject:
+            <div>
+                @foreach ($teacher->subjects as $subject)
+                    <a href="/subject/{{ $subject->id }}" style="color:blue;">
+                        {{ $subject->name }}
+                    </a>
+                @endforeach
+            </div>
+        @else
             Subjects:
+            <div>
+                <div>
+                    [
+                    @foreach ($teacher->subjects as $subject)
+                        <a href="/subject/{{ $subject->id }}" style="color:blue;">
+                            {{ $subject->name }}
+                        </a>
+                        @if (!$loop->last)
+                            -
+                        @endif
+                    @endforeach
+                    ]
+                </div>
+            </div>
 
-        </div>
-    </div>
-    <div class="buttonContainer">
-        <div style="">
-            <a href="/subject/{{ session('subject') }}/lectures" class="button" style="background-color:#6699CC;">Edit Lectures</a>
-            <a href="/subject/{{ session('subject') }}/edit" class="button" style="background-color:#193E6C;">Edit Subject</a>
-        </div>
-        <a href="/subject/{{ session('subject') }}/delete" class="button" style="background-color:red;">Delete
-            Subject</a>
-    </div>
+        @endif
 
-</body>
+        @if ($teacher->universities->count() == 0)
+            Universities: none
+        @elseif($teacher->universities->count() == 1)
+            University:
+            <div>
+                @foreach ($teacher->universities as $university)
+                    <a href="/university/{{ $university->id }}" style="color:blue;">
+                        {{ $university->name }}
+                    </a>
+                @endforeach
+            </div>
+        @else
+            Universities:
+            <div>
+                <div>
+                    [
+                    @foreach ($teacher->universities as $university)
+                        <a href="/university/{{ $university->id }}" style="color:blue;">
+                            {{ $university->name }}
+                        </a>
+                        @if (!$loop->last)
+                            -
+                        @endif
+                    @endforeach
+                    ]
+                </div>
+            </div>
 
-</html>
+        @endif
+        <br>
+        @php
+            $links = json_decode($teacher->links, true);
+        @endphp
+        Links:
+        <br>
+        @if ($links['Facebook'])
+            <a href="{{ $links['Facebook'] }}" target="_blank">Facebook</a>
+            @if ($links['Instagram'] || $links['Telegram'] || $links['YouTube'])
+                -
+            @endif
+        @endif
+
+        @if ($links['Instagram'])
+            <a href="{{ $links['Instagram'] }}">Instagram</a>
+            @if ($links['Telegram'] || $links['YouTube'])
+                -
+            @endif
+        @endif
+
+        @if ($links['Telegram'])
+            <a href="{{ $links['Telegram'] }}">Telegram</a>
+            @if ($links['YouTube'])
+                -
+            @endif
+        @endif
+
+        @if ($links['YouTube'])
+            <a href="{{ $links['YouTube'] }}">YouTube</a>
+        @endif
+    </x-infocard>
+
+</x-layout>

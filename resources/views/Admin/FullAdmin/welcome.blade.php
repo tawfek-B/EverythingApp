@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <style>
-        body {
-            display:flex;
-            flex-direction:column;
-            background: linear-gradient(45deg, #193E6C 0%, #193E6C 30%, #6699CC 60%, #EBEDF2 70%, #EBEDF2 100%);
-            background-size: 175% 175%;
-            background-repeat: no-repeat;
-            animation: gradientShift 5s infinite;
-        }
         .logo {
             width: 300px;
             height: 250px;
@@ -25,16 +14,11 @@
             flex-direction: row;
         }
 
-        .background {
-            background-image: linear-gradient(to bottom right, blue, purple);
-            background-repeat: no-repeat;
-        }
-
         .button {
-            width: 30%;
+            width: 90%;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 3.5%;
+            margin-top: 10%;
             background: #6699CC;
             height: 40px;
             display: flex;
@@ -43,10 +27,12 @@
             border: black 2.5px solid;
             transition: 0.3s ease;
         }
+
         .button:hover {
-            border-radius:10px;
-            border:#6699CC 3.5px solid;
+            border-radius: 10px;
+            border: #6699CC 2.5px solid;
         }
+
         .disable-hover .button:hover {
             width: 30%;
             margin-left: auto;
@@ -65,21 +51,24 @@
             color: black;
             text-decoration: none;
             text-align: center;
-            font-size:20px;
+            font-size: 20px;
             /* text-shadow: white 2px 2px 5px; */
-            z-index:2;
+            z-index: 2;
         }
 
         .buttonContainer {
             width: 100%;
+            height: 50%;
             display: flex;
             flex-direction: column;
         }
-        .title{
-            margin-left:auto;
-            margin-right:auto;
-            font-size:30px;
+
+        .title {
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 30px;
         }
+
         #circle {
             position: fixed;
             /* Use fixed to ensure it follows the mouse */
@@ -94,44 +83,40 @@
             transition: opacity 0.3s ease;
             z-index: 1;
         }
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
     </style>
 </head>
+<x-layout : nav=false>
 
-<body style="font-family:'Just Another Hand', cursive;">
     <div class="logo">
         <div class="logo">
             <img src="/Web/EVERYTHING1.png" alt="" class="logo">
         </div>
     </div>
     <div class="title">
-        Welcome {{App\Models\Admin::where('id', session('admin'))->first()->userName}}!
+        Welcome {{ Auth::user()->userName }}!
     </div>
     <div class="buttonContainer">
-        <a href="/teachers" class="button" style="text-decoration: none;">
-            <div class="text">Teachers</div>
-        </a>
-        <a href="/subjects" class="button" id="button" style="text-decoration: none;">
-            <div class="text">Subjects</div>
-        </a>
-        <a href="/users" class="button" style="text-decoration: none;">
-            <div class="text">Students</div>
-        </a>
-        <a href="/admins" class="button" id="button" style="text-decoration: none;">
-            <div class="text">Admins</div>
-        </a>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
+            <a href="/universities" class="button" id="button" style="text-decoration: none;">
+                <div class="text">Universites</div>
+            </a>
+            <a href="/subjects" class="button" id="button" style="text-decoration: none;">
+                <div class="text">Subjects</div>
+            </a>
+            <a href="/lectures" class="button" style="text-decoration: none;">
+                <div class="text">Lectures</div>
+            </a>
+            <a href="/teachers" class="button" style="text-decoration: none;">
+                <div class="text">Teachers</div>
+            </a>
+            <a href="/users" class="button" style="text-decoration: none;">
+                <div class="text">Users</div>
+            </a>
+            <a href="/admins" class="button" id="button" style="text-decoration: none;">
+                <div class="text">Admins</div>
+            </a>
+        </div>
+
     </div>
     <div class="circle"id="circle"></div>
     <script>
@@ -186,6 +171,4 @@
             });
         });
     </script>
-</body>
-
-</html>
+</x-layout>

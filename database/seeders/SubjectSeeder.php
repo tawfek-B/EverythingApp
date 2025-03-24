@@ -14,13 +14,13 @@ class SubjectSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             $subject = Subject::factory()->create([
                 'name' => fake()->colorName(),
-                'lectures'=>0,
+                'lecturesCount'=>0,
                 'subscriptions'=>0,
+                'image' => 'Subjects/default.png',
             ]);
-            Teacher::where('id', rand(1, Teacher::count()))->first()->subjects()->attach($subject->id);
             }
         //
     }

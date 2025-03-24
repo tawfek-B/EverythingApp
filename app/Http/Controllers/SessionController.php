@@ -10,13 +10,12 @@ use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Log;
 class SessionController extends Controller
 {
 
     public function createUser(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'userName' => 'required|string|unique:users,userName',
             'number' => 'required|string|unique:users,number',
@@ -34,12 +33,18 @@ class SessionController extends Controller
             ], 422);
         }
         $userAttributes = $request->validate([
-            $userName = 'userName' => ['required'],
-            $number = 'number' => ['required'],
-            $password = 'password' => ['required'],
+            $userName = $request->input('userName'),
+            $number = $request->input('number'),
+            $password = Hash::make($request->input('password')),
+            $countryCode = "+963",
         ]);
 
-        $user = User::create($userAttributes);
+        $user = User::create([
+            'userName' => $userName,
+            'number' => $number,
+            'password' => $password,
+            'countryCode' => $countryCode,
+        ]);
         $token = $user->createToken('API Token Of' . $user->name)->plainTextToken;
         $user->remember_token = $token;
         $user->save();
@@ -49,58 +54,47 @@ class SessionController extends Controller
     }
     public function loginUser(Request $request)
     {
-        $credentials = $request->validate([
-            'userName' => 'required',
-            'number' => 'required',
-            'password' => 'required'
-        ]);
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('API Token Of' . $user->name)->plainTextToken;
-            $user->remember_token = $token;
-            $user->save();
-            return response()->json([
-                'success' => "true",
-                'token' => $user->remember_token,
-                'user' => $user,
+        // $credentials = $request->validate([
+        //     'userName' => 'required',
+        //     'password' => 'required',
+        // ]);
+
+        // // Attempt to authenticate the user
+        // if (Auth::guard('api')->attempt($credentials)) {
+            $credentials = $request->validate([
+                'userName' => 'required',
+                'password' => 'required',
             ]);
-        } else {
-            $isFound = false;
-            $isMatching = false;
-            foreach (User::all() as $user) {
-                if ($user->userName == $request->input('userName')) {
-                    if ($user->number == $request->input('number'))
-                        $isMatching = true;
-                    $isFound = true;
-                    break;
-                }
-            }
-            if ($isFound && $isMatching) {
+
+            // Find the user by userName
+            $user = User::where('userName', $credentials['userName'])->first();
+
+            // Check if the user exists and the password is correct
+            if ($user && Hash::check($credentials['password'], $user->password)) {
+                // Generate a token for the user
+                $token = $user->createToken('API Token')->plainTextToken;
+                $user->remember_token = $token;
                 return response()->json([
-                    'success' => "false",
-                    'reason' => "Wrong Password",
-                ]);
-            } else if ($isFound && !$isMatching) {
-                return response()->json([
-                    'success' => "false",
-                    'reason' => "Wrong Number",
+                    'success' => true,
+                    'token' => $token,
+                    'user' => $user,
                 ]);
             } else {
                 return response()->json([
-                    'success' => "false",
-                    'reason' => "Wrong user name",
-                ]);
+                    'success' => false,
+                    'reason' => 'Invalid credentials',
+                ], 401);
             }
-        }
     }
+
 
     public function logoutUser()
     {
-
         Auth::user()->remember_token = null;
         Auth::user()->save();
         Auth::user()->currentAccessToken()->delete();
 
+        // dd(Auth::user());
 
         return response()->json([
             'success' => 'true',
@@ -117,20 +111,15 @@ class SessionController extends Controller
 
     public function loginWeb(Request $request)
     {
-        $credentials = ['userName'=>$request->userName, 'password'=>$request->password];
-        if(Auth::attempt($credentials)) {
+        $credentials = ['userName' => $request->userName, 'password' => $request->password];
+        if (Auth::attempt($credentials)) {
             $admin = Admin::where('userName', $credentials['userName'])->first();
             if (Hash::check($credentials['password'], $admin->password)) {
                 Auth::login($admin);
-                if ($admin->privileges == 2)
-                    return redirect('/welcomeAdmin');
-                else if($admin->privileges == 1)
-                return view('Admin/SemiAdmin/welcome');
-                else if($admin->privileges == 0)
-                    return redirect('/welcomeAdmin');
+                return redirect('/welcome');
             }
         }
-        return redirect()->back()->withErrors(['password' => 'Incorrect Credentials'])->withInput(['userName']);
+        return redirect()->back()->withErrors(['password' => 'Invalid Credentials'])->withInput(['userName']);
 
     }
 }

@@ -49,4 +49,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    function subjects() {
+        return $this->belongsToMany(Subject::class, 'subscriptions');
+    }
+    function lectures() {
+        return $this->belongsToMany(Lecture::class, 'user_lecture');
+    }
 }

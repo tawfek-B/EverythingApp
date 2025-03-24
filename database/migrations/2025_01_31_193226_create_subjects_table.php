@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('lectures');
+            $table->string('name')->unique();
+            $table->integer('lecturesCount');
             $table->integer('subscriptions');
+            $table->string('image');
             $table->timestamps();
         });
     }

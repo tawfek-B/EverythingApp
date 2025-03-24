@@ -23,21 +23,21 @@
 
     .page-link:hover {
         border-radius: 7.5px;
-        color: white;
+        color: rgb(0, 0, 0);
         background-color: #6699CC;
         box-shadow: 0 0 15px #EBEDF2;
     }
 
     .page-item.active .page-link {
         background-color: #6699CC;
-        color: white;
+        color: black;
         border: none;
         box-shadow: 0 0 10px #EBEDF2;
     }
 
     .page-item.disabled .page-link {
-        color: #ccc;
-        border-color: #CCC;
+        color: #555555;
+        border-color: #555555;
         pointer-events: none;
     }
 
@@ -64,6 +64,10 @@
 </style>
 
 @if ($paginator->hasPages())
+    {{-- <div class="pagination-info" style="text-align: center; margin-bottom: 20px; font-size: 24px; color: #000000;">
+        Showing {{ $paginator->firstItem() }} to {{ $paginator->lastItem() }} of {{ $paginator->total() }} items
+    </div> --}}
+
     <nav>
         <ul class="pagination">
             @if (!$paginator->onFirstPage())

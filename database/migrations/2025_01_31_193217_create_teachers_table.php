@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('userName');
+            $table->string('name')->unique();
+            $table->string('userName')->unique();
+            $table->string('countryCode');
+            $table->string('number')->unique();
             $table->string('password');
-            $table->string('number');
+            $table->string('image');
+            $table->json('links')->nullable();
             // $table->string('Subject');   //I'll figure what i need to do with this
             $table->timestamps();
         });

@@ -1,0 +1,29 @@
+home page {
+    unis: [
+        name, photo
+    ],
+    teachers: [
+        name, photo
+    ],
+    subjects: [
+        name, photo
+    ],
+    lectures: [
+        name, photo, URL
+    ],
+    teacher: [
+        name, photo, subjects, number, links(each one)
+    ],
+    sign up: [
+        userName, password, number
+    ],
+    log in: [
+        userName, password
+    ],
+    change password: [
+        password, newPassword
+    ],
+    change userName: [
+        newUserName
+    ],
+}

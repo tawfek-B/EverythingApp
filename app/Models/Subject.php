@@ -17,4 +17,11 @@ class Subject extends Model
     public function teachers() {
         return $this->belongsToMany(Teacher::class, 'teacher_subject');
     }
+
+    function users() {
+        return $this->belongsToMany(User::class, 'subscriptions');
+    }
+    function lectures() {
+        return $this->belongsToMany(Lecture::class, 'subject_lecture');
+    }
 }

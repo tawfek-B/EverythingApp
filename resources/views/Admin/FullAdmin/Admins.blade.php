@@ -1,228 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
+@props(['admins' => null])
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Just+Another+Hand&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Everything App</title>
+@php
+    // Get the search query, sort parameter, and filter values from the request
+    $searchQuery = request('search');
+    $sort = request('sort', 'newest'); // Default to 'newest'
+    $selectedPrivileges = request('privileges', []); // Selected privileges for filtering
 
-    <style>
-        body {
-            margin: 0;
-            height: 160vh;
-            background: linear-gradient(45deg, #193E6C 0%, #193E6C 30%, #6699CC 60%, #EBEDF2 70%, #EBEDF2 100%);
-            font-family: Arial, Helvetica, sans-serif;
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Just Another Hand';
-            background-size: 175% 175%;
-            background-repeat: no-repeat;
-            animation: gradientShift 5s infinite;
-        }
+    // Normalize the search query by converting to lowercase and splitting into individual terms
+    $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
 
-        .AdminContainer {
-            width: 80%;
-            height: 100%;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 20px;
+    // Fetch admins based on the search query, sort parameter, and filters
+    $modelToPass = App\Models\Admin::when($searchQuery, function ($query) use ($searchTerms) {
+        foreach ($searchTerms as $term) {
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                    ->orWhereRaw('LOWER(userName) LIKE ?', ["%{$term}%"])
+                    ->orWhereRaw('LOWER(CONCAT(countryCode, number)) LIKE ?', ["%{$term}%"]);
+            });
         }
-
-        .Admin {
-            background: #193E6C;
-            padding: 5px 0;
-            margin-top: 2%;
-            font-size: 30px;
-            border: #6699CC 4px solid;
-            color: white;
-            border-radius: 3px;
-            display: flex;
-            flex-direction: row;
-            transition: 0.3s ease;
-            align-items: center;
-            max-height:175px;
-        }
-
-        .Admin:hover {
-            background-color: #6699CC;
-            border: #6699CC 4px solid;
-            border-radius: 10px;
-            color: white;
-        }
-
-        .textContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            line-height: 35px;
-            z-index: 2;
-        }
-
-        .disable-hover .Admin:hover {
-            background: #193E6C;
-            padding: 5px 0;
-            margin-top: 2%;
-            font-size: 30px;
-            border: #6699CC 4px solid;
-            color: white;
-            border-radius: 3px;
-            display: flex;
-            flex-direction: row;
-            transition: 0.3s ease;
-            align-items: center;
-        }
-        .line {
-            width:47%;
-            height:15px;
-            background:linear-gradient(90deg, white, #6699CC, #193E6C);
-            border:black 1px solid;
-        }
-        #circle {
-            position: fixed;
-            /* Use fixed to ensure it follows the mouse */
-            width: 450px;
-            height: 450px;
-            background-color: #193E6C;
-            border-radius: 50%;
-            pointer-events: none;
-            /* Ensures the circle doesn't interfere with mouse events */
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            /* transition: opacity 0.3s ease; */
-            z-index: 1;
-        }
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
+        return $query;
+    })
+        ->when($selectedPrivileges, function ($query) use ($selectedPrivileges) {
+            $query->whereIn('privileges', $selectedPrivileges); // Filter by privileges
+        })
+        ->when($sort, function ($query) use ($sort) {
+            if ($sort === 'name-a-z') {
+                $query->orderByRaw('LOWER(name) ASC'); // Sort by name A-Z (case-insensitive)
+            } elseif ($sort === 'name-z-a') {
+                $query->orderByRaw('LOWER(name) DESC'); // Sort by name Z-A (case-insensitive)
+            } elseif ($sort === 'username-a-z') {
+                $query->orderByRaw('LOWER(userName) ASC'); // Sort by username A-Z (case-insensitive)
+            } elseif ($sort === 'username-z-a') {
+                $query->orderByRaw('LOWER(userName) DESC'); // Sort by username Z-A (case-insensitive)
+            } elseif ($sort === 'newest') {
+                $query->orderBy('created_at', 'desc'); // Sort by creation date (newest)
+            } elseif ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc'); // Sort by creation date (oldest)
             }
+        })
+        ->paginate(10);
 
-            50% {
-                background-position: 100% 50%;
-            }
+    // Split admins into chunks
+    $chunkSize = 2;
+    $chunkedAdmins = [];
+    for ($i = 0; $i < $chunkSize; $i++) {
+        $chunkedAdmins[$i] = [];
+    }
 
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-    </style>
-</head>
+    foreach ($modelToPass as $index => $admin) {
+        $chunkIndex = $index % $chunkSize;
+        $chunkedAdmins[$chunkIndex][] = $admin;
+    }
+@endphp
 
-<body>
-    @include('Components.NavBar')
-    <div style="display: flex; flex-direction:row;width:100%;justify-content:center; align-items:center; margin-bottom:2.5%;">
-        <div class="line"style="margin-left:auto;margin-right:auto;border-right:none"></div>
-        <div style="text-align: center;border:#193E6C 4px solid; border-radius:10px;background-color:#6699CC; width:auto; min-width:15%;">
-            <div style=" font-size:32.5px;">
-                ADMINS
-            </div>
-        </div>
-        <div class="line"style="margin-left:auto;margin-right:auto;background:linear-gradient(90deg, #193E6C, #6699CC, white);border-left:none"></div>
-    </div>
-    <div class="AdminContainer">
-        @foreach (App\Models\Admin::paginate(10) as $admin)
-            <a href="/admin/{{ $admin->id }}" class="Admin" style="text-decoration: none;"
-                id="button{{ $admin->id }}">
-                <img src="{{ asset('/Web/EVERYTHING1.png') }}" alt="Admin Image"
-                    style="width:20%; height:50%; z-index:2;"><!-- \server-->
-                <div class="textContainer">
-                    Admin name: {{ $admin->name }}<br>
-                    Admin user name: {{$admin->userName}}<br>
-                    Privileges:
-                    @if($admin->privileges==0)
-                    Teacher
-                    @elseif ($admin->privileges == 1)
-                    Semi-Admin
-                    @else
-                    Admin
-                    @endif<br>
-                    @if ($admin->teacher_id!=null)
-                    Teacher: {{App\Models\Teacher::where('id', $admin->teacher_id)->first()->name}}
-                    @endif
+<x-layout :objects=true object="ADMINS">
+    <x-breadcrumb :links="['Home' => url('/welcome'), 'Admins' => url('/admins')]" />
 
+    <x-cardcontainer :model=$modelToPass addLink="addadmin" :showUsernameSort=true :showNameSort=true
+        :showPrivilegeFilter=true>
+        <!-- Add a unique ID to the container for dynamic updates -->
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+            @foreach ($chunkedAdmins as $chunk)
+                <div class="chunk">
+                    @foreach ($chunk as $admin)
+                        <x-card link="admin/{{ $admin->id }}" image="{{ asset($admin->image) }}" object="Admin">
+                            ● Admin Name: {{ $admin->name }}<br>
+                            ● Admin User Name: {{ $admin->userName }}<br>
+                            ● Admin Number: {{ $admin->countryCode }} {{ $admin->number }}<br>
+                            ● Admin Privileges:
+                            @if ($admin->privileges == 0)
+                                Teacher
+                            @elseif ($admin->privileges == 1)
+                                Semi-Admin
+                            @else
+                                Admin
+                            @endif
+                            <br>
+                        </x-card>
+                    @endforeach
                 </div>
-            </a>
-            <div id="circle" class="circle"></div>
-        @endforeach
-    </div>
-    <div style="margin-top:2.5%; width:50px; height:50px;">
-        {{ App\Models\Admin::paginate(10)->links() }}
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.Admin'); // Select all buttons
-            const circle = document.getElementById('circle'); // Select the circle
+            @endforeach
+        </div>
+    </x-cardcontainer>
 
-            buttons.forEach(button => {
-                button.addEventListener('mousemove', (event) => {
-                    const buttonRect = button.getBoundingClientRect();
-                    const mouseX = event.clientX;
-                    const mouseY = event.clientY;
+    @if ($modelToPass->total() > 1)
+        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: #000000;">
+            Showing {{ $modelToPass->firstItem() }} to {{ $modelToPass->lastItem() }} of {{ $modelToPass->total() }}
+            admins
+        </div>
+    @endif
 
-                    // Check if the mouse is near or on the button
-                    const isNearButton =
-                        mouseX >= buttonRect.left &&
-                        mouseX <= buttonRect.right &&
-                        mouseY >= buttonRect.top &&
-                        mouseY <= buttonRect.bottom;
+    <!-- Conditionally render pagination links -->
+    @if ($modelToPass->total() > 10)
+        <div class="pagination">
+            {{ $modelToPass->appends([
+                    'search' => $searchQuery,
+                    'sort' => $sort,
+                    'privileges' => $selectedPrivileges,
+                ])->links() }}
+        </div>
+    @endif
+</x-layout>
 
-                    if (isNearButton) {
-                        // Position the circle at the mouse cursor
-                        circle.style.left = `${mouseX}px`;
-                        circle.style.top = `${mouseY}px`;
-                        circle.style.opacity = '1';
-                        circle.style.zIndex = '1';
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchBar = document.querySelector('.search-bar');
+        const dynamicContent = document.getElementById('dynamic-content');
 
-                        // Calculate the clip-path based on the button's boundaries
-                        const clipTop = Math.max(buttonRect.top - mouseY + 230, 0);
-                        const clipRight = Math.max(mouseX - buttonRect.right + 230, 0);
-                        const clipBottom = Math.max(mouseY - buttonRect.bottom + 230, 0);
-                        const clipLeft = Math.max(buttonRect.left - mouseX + 230, 0);
-                        circle.style.clipPath =
-                            `inset(${clipTop}px ${clipRight}px ${clipBottom}px ${clipLeft}px)`;
+        searchBar.addEventListener('input', function() {
+            const query = searchBar.value;
+
+            // Get current filter values
+            const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
+            'newest';
+            const selectedPrivileges = Array.from(document.querySelectorAll(
+                'input[name="privileges[]"]:checked')).map(el => el.value);
+
+            // Build the query string
+            const params = new URLSearchParams();
+            params.set('search', query);
+            params.set('sort', selectedSort);
+            selectedPrivileges.forEach(privilege => params.append('privileges[]', privilege));
+
+            // Fetch results via AJAX
+            fetch(`{{ request()->url() }}?${params.toString()}`)
+                .then(response => response.text())
+                .then(data => {
+                    // Parse the response and extract the dynamic content
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const newContent = doc.getElementById('dynamic-content').innerHTML;
+
+                    // Update the dynamic content without changing the structure
+                    dynamicContent.innerHTML = newContent;
+
+                    attachCircleEffect();
+                    refreshAnimations();
+
+                    if (@json($modelToPass->count()) > 10) {
+
+                        // Update pagination info text
+                        const paginationInfo = doc.querySelector('.pagination-info');
+                        const paginationInfoContainer = document.querySelector('.pagination-info');
+                        if (paginationInfo) {
+                            paginationInfoContainer.innerHTML = paginationInfo.innerHTML;
+                        } else {
+                            paginationInfoContainer.innerHTML = '';
+                        }
+
+                        // Update pagination links conditionally
+                        const pagination = doc.querySelector('.pagination');
+                        const paginationContainer = document.querySelector('.pagination');
+                        if (pagination) {
+                            paginationContainer.innerHTML = pagination.innerHTML;
+                        } else {
+                            paginationContainer.innerHTML = '';
+                        }
                     }
-                });
-
-                button.addEventListener('mouseleave', () => {
-                    circle.style.opacity = '0';
-                });
-                document.addEventListener('scroll', () => {
-                    circle.style.opacity = '0';
-                });
-                let scrollTimer;
-                document.addEventListener('scroll', () => {
-                    document.body.classList.add('disable-hover');
-                    clearTimeout(scrollTimer);
-                    scrollTimer = setTimeout(() => {
-                        document.body.classList.remove('disable-hover');
-                    }, 200);
                 })
-            });
-            });
-        function setActiveLink() {
-            const currentPage = window.location.pathname; // Get the current page path
-            const links = document.querySelectorAll('.NavBarText'); // Get all navigation links
-
-            links.forEach(link => {
-                if (link.getAttribute('href') === currentPage) {
-                    link.classList.add('active'); // Add the 'active' class to the current page link
-                } else {
-                    link.classList.remove('active'); // Remove 'active' class from other links
-                }
-            });
-        }
-
-        // Call the function when the page loads
-        window.onload = setActiveLink;
-    </script>
-</body>
-
-</html>
+                .catch(error => console.error('Error fetching search results:', error));
+        });
+    });
+</script>

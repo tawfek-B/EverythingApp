@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('userName');
+            $table->string('name')->unique();
+            $table->string('userName')->unique();
             $table->string('password');
             $table->integer('privileges');
+            $table->string('countryCode');
+            $table->string('number')->unique();
+            $table->string('image');
             $table->foreignIdFor(App\Models\Teacher::class)->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
