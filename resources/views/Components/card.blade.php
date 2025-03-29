@@ -9,17 +9,67 @@
         border-radius: 3px;
         display: flex;
         flex-direction: row;
-        transition: 0.3s ease;
+        transition: all 0.3s ease;
         transform: translateY(-2px);
-        /* Use transform for hover effect */
         align-items: center;
         text-decoration: none;
         position: relative;
-        /* Create a stacking context */
         overflow: hidden;
-        /* Prevent the circle from overflowing */
+        width: 100%;
+        /* Full width by default */
+        max-width: 800px;
+        /* Maximum width */
+        margin-left: auto;
+        margin-right: auto;
     }
 
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .Object {
+            font-size: 24px;
+            /* Smaller font size */
+            flex-direction: column;
+            /* Stack vertically */
+            padding: 15px;
+            /* Add some padding */
+        }
+
+        .textContainer {
+            width: 100% !important;
+            /* Full width text */
+            padding: 15px !important;
+            /* Adjust padding */
+            text-align: center;
+            /* Center text */
+        }
+
+        .image-container {
+            width: 100% !important;
+            /* Full width image */
+            padding-top: 50% !important;
+            /* Adjust aspect ratio */
+            margin-bottom: 15px;
+            /* Add space below image */
+        }
+
+        .Object:hover {
+            transform: scale(1.02);
+            /* Simpler hover effect on mobile */
+            animation: none;
+            /* Disable complex animation */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .Object {
+            font-size: 20px;
+            /* Even smaller font */
+            border-width: 3px;
+            /* Thinner border */
+        }
+    }
+
+    /* Rest of your existing styles... */
     .Object:hover {
         box-shadow: 0 0.25rem 0.25rem 0.1rem #121212;
         background-color: #6699CC;
@@ -47,14 +97,12 @@
         flex-direction: column;
         line-height: 150%;
         z-index: 2;
-        /* Ensure text is above the circle */
         width: 80%;
         padding: 4%;
     }
 
     .circle {
         position: absolute;
-        /* Position relative to .Object */
         width: 450px;
         height: 450px;
         background-color: #193E6C;
@@ -63,7 +111,6 @@
         transform: translate(-50%, -50%);
         opacity: 0;
         z-index: 1;
-        /* Ensure the circle is behind the text and image */
     }
 
     .image-container {
@@ -71,10 +118,46 @@
         width: 20%;
         position: relative;
         padding-top: 20%;
+        /* Maintain aspect ratio */
         overflow: hidden;
         flex-shrink: 0;
         z-index: 2;
-        /* Ensure the image is above the circle */
+        transition: all 0.3s ease;
+        /* Smooth transitions */
+    }
+
+    /* Responsive image adjustments */
+    @media (max-width: 992px) {
+        .image-container {
+            width: 25%;
+            padding-top: 25%;
+            /* Slightly larger on medium screens */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .image-container {
+            width: 40%;
+            padding-top: 40%;
+            /* Larger for tablets */
+            margin-bottom: 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .image-container {
+            width: 60%;
+            padding-top: 60%;
+            /* Even larger for mobile */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .image-container {
+            width: 80%;
+            padding-top: 80%;
+            /* Nearly full width for small phones */
+        }
     }
 
     .subject-image {
@@ -85,7 +168,6 @@
         height: 100%;
         object-fit: cover;
         z-index: 2;
-        /* Ensure the image is above the circle */
     }
 
     @keyframes hover {
@@ -102,26 +184,28 @@
         }
     }
 
-    /* Add this to your CSS */
+    /* Enhanced disappear animation */
     @keyframes fadeAndRise {
         0% {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+        }
+
+        70% {
+            opacity: 1;
+            transform: translateY(-40px) scale(1.05);
+            /* Peak of rise */
         }
 
         100% {
             opacity: 0;
-            transform: translateY(-10%);
-            /* Adjust distance as needed */
+            transform: translateY(-80px) scale(0.95);
         }
     }
 
-    /* Class to trigger the animation */
     .Object.disappear {
-        animation: fadeAndRise 0.05s ease forwards;
-        /* 'forwards' keeps the final state */
+        animation: fadeAndRise 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         pointer-events: none;
-        /* Disable clicks during animation */
     }
 </style>
 
@@ -131,30 +215,30 @@
         <div class="image-container">
             <img src="{{ $image }}" alt="{{ $object }} image" class="subject-image">
         </div>
-        <div style="width:1px; height:100%; background-color:#EBEDF2; margin-right:2%; margin-left:2%; z-index:2;">
-        </div>
+        <div style="width:1px; height:100%; background-color:#EBEDF2; margin-right:2%; margin-left:2%; z-index:2;"></div>
     @endif
     <div class="textContainer">{{ $slot }}</div>
-    <div id="circle" class="circle"></div> <!-- Move the circle inside the .Object -->
+    <div id="circle" class="circle"></div>
 </a>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('.Object'); // Select all buttons
+        const buttons = document.querySelectorAll('.Object');
 
         buttons.forEach(button => {
-            const circle = button.querySelector('.circle'); // Select the circle inside the button
+
+            const circle = button.querySelector('.circle');
 
             button.addEventListener('mousemove', (event) => {
-                const buttonRect = button.getBoundingClientRect();
-                const mouseX = event.clientX - buttonRect
-                    .left; // Calculate mouse position relative to the button
-                const mouseY = event.clientY - buttonRect.top;
+                if (window.innerWidth > 768) { // Only apply on larger screens
+                    const buttonRect = button.getBoundingClientRect();
+                    const mouseX = event.clientX - buttonRect.left;
+                    const mouseY = event.clientY - buttonRect.top;
 
-                // Position the circle at the mouse cursor
-                circle.style.left = `${mouseX}px`;
-                circle.style.top = `${mouseY}px`;
-                circle.style.opacity = '1';
+                    circle.style.left = `${mouseX}px`;
+                    circle.style.top = `${mouseY}px`;
+                    circle.style.opacity = '1';
+                }
             });
 
             button.addEventListener('mouseleave', () => {
@@ -177,13 +261,10 @@
     });
 </script>
 <script>
-    // Vanilla JS
-    // Function to attach click animations to cards
     function bindDisappearAnimations() {
         document.querySelectorAll('.Object:not(.disappear)').forEach(card => {
             card.addEventListener('click', function() {
                 this.classList.add('disappear');
-                setTimeout(() => this.remove(), 100); // Remove after animation
             });
         });
     }
@@ -192,6 +273,10 @@
     bindDisappearAnimations();
 
     // Re-bind after filtering/searching (call this after DOM updates)
+    function refreshAnimations() {
+        bindDisappearAnimations(); // Re-attach to new/filtered cards
+    }
+
     function refreshAnimations() {
         bindDisappearAnimations(); // Re-attach to new/filtered cards
     }

@@ -15,17 +15,34 @@ class UserController extends Controller
 
     public function fetchAuth()
     {
-        return response()->json([
-            'success' => "true",
-            'user' => Auth::user()
-        ]);
+        $user = Auth::user();
+
+        $subjects = "";
+        $count = $user->subjects->count();
+        foreach ($user->subjects as $index => $subject) {
+            $subjects .= $subject->name;
+            if ($index < $count - 1) {
+                $subjects .= " - ";
+            }
+        }
+
+        $userArray = $user->toArray();
+        $userArray['subs'] = $subjects;
+        $userArray['lecturesNum'] = $user->lectures->count();
+
+        $response = [
+            'success' => true,
+            'user' => $userArray
+        ];
+
+        return response()->json($response);
     }
 
     public function fetch($id)
     {
         $found = ($user = User::where('id', $id)->first()) ? true : false;
         return response()->json([
-            'Success' => $found,
+            'success' => $found,
             'User' => $user
         ]);
     }
@@ -43,6 +60,23 @@ class UserController extends Controller
         return response()->json([
             'success' => "true",
             'lectures' => Auth::user()->lectures
+        ]);
+    }
+
+    public function fetchSubs()
+    {
+        $user = Auth::user();
+        $subjects = "";
+        $count = $user->subjects->count();
+        foreach ($user->subjects as $index => $subject) {
+            $subjects .= $subject->name;
+            if ($index < $count - 1)
+                $subjects .= " - ";
+        }
+        return response()->json([
+            'success' => "true",
+            'subjects' => $subjects,
+            'lectures' => Auth::user()->lectures->count()
         ]);
     }
 
@@ -91,7 +125,7 @@ class UserController extends Controller
     }
 
     public function edit(Request $request, $id)
-    {
+    {//change
         $validator = $request->validate([
             'user_name' => [
                 Rule::unique('users', 'userName')->ignore($id)
@@ -111,6 +145,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $subjects = json_decode($request->selected_objects, true);
         $lectures = json_decode($request->selected_lectures, true);
+        if ($request->selected_lectures == null)
+            $lectures = $user->lectures->pluck('id')->toArray();
+        // dd($lectures);
         $user->subjects()->sync($subjects);
         $user->lectures()->sync($lectures);
         // dd($subjects);

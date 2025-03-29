@@ -6,7 +6,7 @@
         editSubscriptionsLink="subject/{{ $subject->id }}/users" lecturesCount="{{ $subject->lecturesCount }}"
         subscriptionsCount="{{ App\Models\Subject::withCount('users')->find(session('subject'))->users_count }}"
         :object=$subject objectType="Subject" image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
-        warning="WARNING: Deleting this subject will delete all its lectures and user subscriptions.">
+        warning="WARNING: Deleting this subject will delete all its lectures and user subscriptions." :addLecture=true>
         Subject Name: {{ $subject->name }}<br>
         Lectures:
         @if ($subject->lectures->count() == 0)

@@ -10,6 +10,8 @@ class university extends Model
     /** @use HasFactory<\Database\Factories\UniversityFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function teachers() {
         return $this->belongsToMany(Teacher::class, 'teacher_university');
     }

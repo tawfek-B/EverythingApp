@@ -23,12 +23,12 @@ use Illuminate\Support\Collection;
 Route::middleware('auth.api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/', function () {
-    return view('register');
-})->name('login');
+Route::get(
+    '/',
+    [SessionController::class, 'loginView']
+)->name('login');
 // Route::post('/reg', [SessionController::class, 'adminlogin']);
 Route::post('/weblogin', [SessionController::class, 'loginWeb']);
-
 
 
 
@@ -169,6 +169,13 @@ Route::group(['middleware' => ['auth']], function () {
         else
             return abort(404);
     });
+
+    Route::get('/subject/addlecture/{id}', function ($id) {
+        if (Auth::user()->privileges == 0)
+            return view('Teacher/LectureAdd', with(['subjectID' => $id]));
+        else
+            return abort(404);
+    });
     Route::post('/addlecture', [LectureController::class, 'add'])->name('addlecture');
 
     Route::get('/addsubject', function () {
@@ -243,6 +250,13 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
 
     });
+    Route::get('/adduniversity', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/UniversityAdd');
+        else
+            return abort(404);
+    });
+    Route::post('/adduniversity', [UniversityController::class, 'add']);
 
     Route::get('/university/edit/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
@@ -253,6 +267,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     Route::put('/edituniversity/{id}', [UniversityController::class, 'edit']);
+    Route::delete('/deleteuniversity/{id}', [UniversityController::class, 'delete']);
 
 
     Route::put('/editadmin/{id}', [AdminController::class, 'edit']);
@@ -412,7 +427,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/test', function () {
         dd(Subject::withCount('users')->find(16));
     });
-    Route::get('lecture/show/{id}', [FileController::class, 'show'])->name('file.show');
+    Route::get('lecture/show/{id}/360', [FileController::class, 'show360'])->name('file360.show');
+    Route::get('lecture/show/{id}/720', [FileController::class, 'show720'])->name('file720.show');
+    Route::get('lecture/show/{id}/1080', [FileController::class, 'show1080'])->name('file1080.show');
 
     Route::get('/welcome', function () {
         if (Auth::user()->privileges == 2)
@@ -423,7 +440,7 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Teacher/welcome');
         else
             return redirect('/');
-    });
+    })->name('welcome');
     Route::get('/confirmupdate', function () {
         return view(view: 'confirmedUpdate');
     })->name('update.confirmation');

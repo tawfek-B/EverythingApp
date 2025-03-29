@@ -28,8 +28,8 @@ class SessionController extends Controller
         if ($validator->fails()) {
             // Return all validation errors
             return response()->json([
-                'Success' => false,
-                'Errors' => $validator->errors(),
+                'success' => false,
+                'reason' => $validator->errors(),
             ], 422);
         }
         $userAttributes = $request->validate([
@@ -54,19 +54,19 @@ class SessionController extends Controller
     }
     public function loginUser(Request $request)
     {
-        // $credentials = $request->validate([
-        //     'userName' => 'required',
-        //     'password' => 'required',
-        // ]);
+        $credentials = $request->validate([
+            'userName' => 'required',
+            'password' => 'required',
+        ]);
 
         // // Attempt to authenticate the user
         // if (Auth::guard('api')->attempt($credentials)) {
-            $credentials = $request->validate([
-                'userName' => 'required',
-                'password' => 'required',
-            ]);
+            // $credentials = $request->validate([
+            //     'userName' => 'required',
+            //     'password' => 'required',
+            // ]);
 
-            // Find the user by userName
+            // // Find the user by userName
             $user = User::where('userName', $credentials['userName'])->first();
 
             // Check if the user exists and the password is correct
@@ -82,9 +82,27 @@ class SessionController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'reason' => 'Invalid credentials',
+                    'reason' => 'Invalid Credentials',
                 ], 401);
             }
+
+            // $loginData = $request->validate([
+            //     'userName' => 'string|required|exists:users',
+            //     'password' => 'required'
+            // ]);
+            // $credentials = request(['email', 'password']);
+
+            // if(auth()->guard('user')->attempt($request->only('userName', 'password'))) {
+            //     $user = User::query()->select('users.*')->find(auth()->guard('user')->user()['id']);
+            //     $success = $user;
+            //     $success['token'] = $user->createToken('API Token', ['user'])->accessToken;
+
+            //     return response()->json('worked');
+            // }
+            // else {
+            //     return response()->json('worked not');
+
+            // }
     }
 
 
@@ -107,6 +125,13 @@ class SessionController extends Controller
         return response()->json([
             'User' => $user
         ]);
+    }
+
+    public function loginView() {
+        if (auth()->check()) {
+            return redirect()->route('welcome');
+        }
+        return view('register');
     }
 
     public function loginWeb(Request $request)

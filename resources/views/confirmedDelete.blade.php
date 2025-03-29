@@ -49,7 +49,6 @@
         @endif
         <p>You will be redirected shortly...</p>
     </div>
-
 </x-layout>
 
 </html>

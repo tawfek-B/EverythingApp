@@ -24,28 +24,33 @@ class TeacherController extends Controller
             // Decode the links JSON column (if it's stored as a string)
             $links = is_string($teacher->links) ? json_decode($teacher->links, true) : $teacher->links;
 
+            $count = $teacher->subjects->count();
+            $subjects = "";
+            foreach ($teacher->subjects as $index => $subject) {
+                $subjects .= $subject->name;
+                if ($index < $count - 1)
+                    $subjects .= " - ";
+            }
+            $count = $teacher->universities->count();
+            $universities = "";
+            foreach ($teacher->universities as $index => $university) {
+                $universities .= $university->name;
+                if ($index < $count - 1)
+                    $universities .= " - ";
+            }
             // Build the response
             $response = [
                 'teacher' => [
                     'id' => $teacher->id,
                     'name' => $teacher->name,
                     'number' => $teacher->number,
+                    'image' => $teacher->image,
                     'facebook' => $links['Facebook'] ?? null,
                     'instagram' => $links['Instagram'] ?? null,
                     'telegram' => $links['Telegram'] ?? null,
                     'youtube' => $links['YouTube'] ?? null,
-                    'universities' => $teacher->universities->map(function ($university) {
-                        return [
-                            'id' => $university->id,
-                            'name' => $university->name,
-                        ];
-                    }),
-                    'subjects' => $teacher->subjects->map(function ($subject) {
-                        return [
-                            'id' => $subject->id,
-                            'title' => $subject->name,
-                        ];
-                    }),
+                    'universities' => $universities,
+                    'subjects' => $subjects,
                 ],
             ];
 
@@ -110,15 +115,46 @@ class TeacherController extends Controller
             ]);
         } else {
             return response()->json([
-                'success' => "false"
+                'success' => "false",
+                'reason' => "Teacher Not Found"
             ]);
         }
     }
     public function fetchAll()
     {
-        return response()->json([
-            "teachers" => Teacher::all(),
-        ]);
+        // Build the response
+        $response = [];
+        foreach (Teacher::all() as $teacher) {
+            $unis = "";
+            $count = $teacher->universities->count();
+            foreach ($teacher->universities as $index => $uni) {
+                $unis .= $uni->name;
+                if ($index < $count - 1)
+                    $unis .= " - ";
+            }
+            $subs = "";
+            $count = $teacher->subjects->count();
+            foreach ($teacher->subjects as $index => $sub) {
+                $subs .= $sub->name;
+                if ($index < $count - 1)
+                    $subs .= " - ";
+            }
+            $links = json_decode($teacher->links, true);
+            $response[$teacher->id] = [
+                    'id' => $teacher->id,
+                    'name' => $teacher->name,
+                    'number' => $teacher->number,
+                    'image' => $teacher->image,
+                    'facebook' => $links['Facebook'] ?? null,
+                    'instagram' => $links['Instagram'] ?? null,
+                    'telegram' => $links['Telegram'] ?? null,
+                    'youtube' => $links['YouTube'] ?? null,
+                    'universities' => $unis,
+                    'subjects' => $subs,
+            ];
+        }
+
+        return response()->json($response);
     }
     public function add(Request $request)
     {
@@ -192,7 +228,7 @@ class TeacherController extends Controller
             'teacher_id' => $teacher->id,
             'image' => $path,
         ]);
-        $data = ['element' => 'product', 'id' => $teacher->id, 'name' => $teacher->name];
+        $data = ['element' => 'taecher', 'id' => $teacher->id, 'name' => $teacher->name];
         session(['add_info' => $data]);
         return redirect()->route('add.confirmation')->with('link', '/teachers');
     }

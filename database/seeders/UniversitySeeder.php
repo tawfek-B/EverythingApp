@@ -15,19 +15,19 @@ class UniversitySeeder extends Seeder
     {
         University::create([
             'name' => 'Damascus University',
-            'image' => 'Universities/universityDefault.png',
+            'image' => 'Universities/default.png',
         ]);
         University::create([
             'name' => 'Homs University',
-            'image' => 'Universities/universityDefault.png',
+            'image' => 'Universities/default.png',
         ]);
         University::create([
             'name' => 'Tishreen University',
-            'image' => 'Universities/universityDefault.png',
+            'image' => 'Universities/default.png',
         ]);
         University::create([
             'name' => 'Aleppo University',
-            'image' => 'Universities/universityDefault.png',
+            'image' => 'Universities/default.png',
         ]);
         //
     }

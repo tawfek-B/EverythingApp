@@ -18,7 +18,7 @@
                 <div class="error">{{ $message }}</div>
             @enderror
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
-                <label for="teacher_name" style="margin-bottom:10%;">
+                <label for="teacher_user_name" style="margin-bottom:10%;">
                     Teacher User Name:
                 </label>
                 <input type="text" name="teacher_user_name" id="teacher_user_name" value="{{ $teacher->userName }}"
@@ -75,7 +75,7 @@
                             <div class="error">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="input-container">
+                    {{-- <div class="input-container">
                         <!-- SVG Icon -->
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -98,7 +98,7 @@
                         @error('instagram_link')
                             <div class="error">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div> --}}
                     <div class="input-container">
                         <!-- SVG Icon -->
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
@@ -118,6 +118,8 @@
                             <div class="error">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr;gap:5%;">
                     <div class="input-container">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

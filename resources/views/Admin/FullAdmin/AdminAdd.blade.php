@@ -54,7 +54,7 @@
         <div class="dropdown-container">
             <label for="admin-dropdown" style="font-size: 30px;">Privileges:</label>
             <select id="admin-dropdown" name="admin_privileges" class="dropdown" required>
-                <option value="" {{ old('admin_privileges') == '' ? 'selected' : '' }}></option>
+                <option value="" {{ old('admin_privileges') == '' ? 'selected' : '' }}>Select privileges</option>
                 <option value="Semi-Admin" {{ old('admin_privileges') == 'Semi-Admin' ? 'selected' : '' }}>Semi-Admin</option>
                 <option value="Admin" {{ old('admin_privileges') == 'Admin' ? 'selected' : '' }}>Admin</option>
             </select>

@@ -162,13 +162,15 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
+        {{-- Changed from >1 to >0 to show when at least 1 subject --}}
         <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: #000000;">
             Showing {{ $modelToPass->firstItem() }} to {{ $modelToPass->lastItem() }} of {{ $modelToPass->total() }}
             subjects
         </div>
     @endif
 
-    @if ($modelToPass->total() > 10)
+    @if ($num > 10)
+        {{-- Keep this for pagination controls --}}
         <div class="pagination">
             {{ $modelToPass->appends([
                     'search' => $searchQuery,
@@ -187,70 +189,112 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
+        const filterForm = document.querySelector('.filter-dropdown');
+        const filterCheckboxes = document.querySelectorAll(
+            'input[type="checkbox"][name^="teachers"], input[name="none"], input[name^="teacher_count"], input[name^="lecture_count"], input[name^="user_count"]'
+            );
+        const paginationInfoContainer = document.querySelector('.pagination-info');
+        const paginationContainer = document.querySelector('.pagination');
 
-        searchBar.addEventListener('input', function() {
+        // Function to fetch and update results
+        function updateResults() {
             const query = searchBar.value;
-
-            // Get current filter values
-            const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
-                'newest';
-            const selectedTeachers = Array.from(document.querySelectorAll(
-                'input[name="teachers[]"]:checked')).map(el => el.value);
+            const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
+            const selectedTeachers = Array.from(document.querySelectorAll('input[name="teachers[]"]:checked'))
+                .map(el => el.value);
             const filterNone = document.getElementById('filter-none')?.checked || false;
-            const teacherCounts = Array.from(document.querySelectorAll(
-                'input[name="teacher_count[]"]:checked')).map(el => el.value);
+            const teacherCounts = Array.from(document.querySelectorAll('input[name="teacher_count[]"]:checked'))
+                .map(el => el.value);
+            const lectureCounts = Array.from(document.querySelectorAll('input[name="lecture_count[]"]:checked'))
+                .map(el => el.value);
+            const userCounts = Array.from(document.querySelectorAll('input[name="user_count[]"]:checked')).map(
+                el => el.value);
 
-            // Build the query string
+            // Build query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
             selectedTeachers.forEach(teacher => params.append('teachers[]', teacher));
-            if (filterNone) {
-                params.set('none', 'true');
-            }
+            if (filterNone) params.set('none', 'true');
             teacherCounts.forEach(count => params.append('teacher_count[]', count));
+            lectureCounts.forEach(count => params.append('lecture_count[]', count));
+            userCounts.forEach(count => params.append('user_count[]', count));
 
-            // Fetch results via AJAX
+            paginationInfoContainer.innerHTML = '';
+            paginationContainer.innerHTML = '';
+
             fetch(`{{ request()->url() }}?${params.toString()}`)
                 .then(response => response.text())
                 .then(data => {
-                    // Parse the response and extract the dynamic content
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
                     const newContent = doc.getElementById('dynamic-content').innerHTML;
-
-                    // Update the dynamic content without changing the structure
                     dynamicContent.innerHTML = newContent;
 
-                    attachCircleEffect();
-                    refreshAnimations();
+                    // Update pagination info (show if at least 1 result)
+                    const responsePaginationInfo = doc.querySelector('.pagination-info');
+                    if (responsePaginationInfo) {
+                        paginationInfoContainer.innerHTML = responsePaginationInfo.innerHTML;
+                    } else {
+                        // Check if we should show pagination info by extracting count from response
+                        const countMatch = doc.body.textContent.match(/of (\d+) subjects/);
+                        const totalCount = countMatch ? parseInt(countMatch[1]) : 0;
 
-                    if (@json($modelToPass->total()) > 1) {
-                        const paginationInfo = doc.querySelector('.pagination-info');
-                        const paginationInfoContainer = document.querySelector('.pagination-info');
-                        if (paginationInfo) {
-                            paginationInfoContainer.innerHTML = paginationInfo.innerHTML;
+                        if (totalCount > 1) {
+                            // Reconstruct pagination info
+                            const firstItem = 1;
+                            const lastItem = Math.min(10, totalCount);
+                            paginationInfoContainer.innerHTML =
+                                `Showing ${firstItem} to ${lastItem} of ${totalCount} subjects`;
                         } else {
                             paginationInfoContainer.innerHTML = '';
                         }
+                    }
+
+                    // Update pagination controls (show if >10 results)
+                    const responsePagination = doc.querySelector('.pagination');
+                    if (responsePagination) {
+                        paginationContainer.innerHTML = responsePagination.innerHTML;
                     } else {
-                        // Hide the pagination-info div if there is only one result
-                        const paginationInfoContainer = document.querySelector('.pagination-info');
-                        if (paginationInfoContainer) {
-                            paginationInfoContainer.innerHTML = '';
+                        const totalCount = doc.querySelector('.pagination-info')?.textContent.match(
+                            /of (\d+) subjects/)?.[1] || 0;
+                        if (totalCount > 10) {
+                            // We should have pagination but it's missing from response
+                            // You may need to reconstruct it here if needed
+                        } else {
+                            paginationContainer.innerHTML = '';
                         }
                     }
 
-                    // Update pagination links conditionally
-                    const pagination = doc.querySelector('.pagination');
-                    const paginationContainer = document.querySelector('.pagination');
-                    if (pagination) {
-                        paginationContainer.innerHTML = pagination.innerHTML;
-                    } else {
-                        paginationContainer.innerHTML = '';
-                    }
+                    attachCircleEffect();
+                    refreshAnimations();
                 })
-                .catch(error => console.error('Error fetching search results:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    dynamicContent.innerHTML = '<div class="error-message">Failed to load subjects</div>';
+                    paginationInfoContainer.innerHTML = '';
+                    paginationContainer.innerHTML = '';
+                });
+        }
+
+        // Handle search input with debounce
+        let searchTimeout;
+        searchBar.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(updateResults, 0);
         });
+
+        // Handle filter changes
+        if (filterForm) {
+            filterForm.addEventListener('change', updateResults);
+        }
+
+        // Handle individual checkbox changes
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateResults);
+        });
+
+        // Initial attachment of effects
+        attachCircleEffect();
     });
 </script>

@@ -7,14 +7,14 @@
             <input type="text" name="lecture_name" id="lecture_name" value="" autocomplete="off"
                 style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
         </div>
-        <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
+        {{-- <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
             <label for="lecture_description">
                 Lecture Description (optional):
             </label>
             <textarea name="lecture_description" id="lecture_description" autocomplete="off"
                 style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;"></textarea>
         </div>
-
+        --}}
         <br>
         <label for="subject">
             Subject: <br>
@@ -27,27 +27,78 @@
         </select>
         <br>
         <br>
-        <label for="lecture_file">
-            File (Video, PDF, or Audio):
-            <br>
-        </label>
-        <input type="file" name="lecture_file" id="lecture_file" accept="video/*, audio/*, application/pdf" required>
+        <span>Video File:</span>
+        <br>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
+            <div>
+                <label for="actual-file-input-360">360p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
+                        accept="video/*">
+                    <label for="actual-file-input-360" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-360">Choose a file</span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label for="actual-file-input-720">720p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-720" class="hidden-file-input" name="lecture_file_720"
+                        accept="video/*">
+                    <label for="actual-file-input-720" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-720">Choose a file</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction:row;">
+            <div style="margin-left:auto;margin-right:auto;">
+
+                <label for="actual-file-input-1080">1080p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-1080" class="hidden-file-input" name="lecture_file_1080"
+                        accept="video/*">
+                    <label for="actual-file-input-1080" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-1080">Choose a file</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br>
     </x-addcard>
 
-    <!-- JavaScript for file validation -->
     <script>
-        document.getElementById('lecture_file').addEventListener('change', function (event) {
-            const file = event.target.files[0]; // Get the selected file
-            const allowedTypes = ['video', 'audio', 'application/pdf']; // Allowed MIME types
-            const fileType = file.type; // Get the MIME type of the file
+        // Function to handle file input changes
+        function setupFileInput(inputId, textId) {
+            const input = document.getElementById(inputId);
+            const textElement = document.getElementById(textId);
 
-            // Check if the file type is allowed
-            const isAllowed = allowedTypes.some(type => fileType.startsWith(type));
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
 
-            if (!isAllowed) {
-                alert('Invalid file type. Please upload a video, audio, or PDF file.');
-                event.target.value = ''; // Clear the file input
-            }
-        });
+                if (file) {
+                    // Check file type
+                    const allowedTypes = ['video'];
+                    const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
+
+                    if (!isAllowed) {
+                        alert('Invalid file type. Please upload a video file.');
+                        event.target.value = '';
+                        textElement.textContent = 'Choose a file';
+                        return;
+                    }
+
+                    // Update the display text
+                    textElement.textContent = file.name;
+                } else {
+                    textElement.textContent = 'Choose a file';
+                }
+            });
+        }
+
+        // Set up all file inputs
+        setupFileInput('actual-file-input-360', 'file-input-text-360');
+        setupFileInput('actual-file-input-720', 'file-input-text-720');
+        setupFileInput('actual-file-input-1080', 'file-input-text-1080');
     </script>
 </x-layout>

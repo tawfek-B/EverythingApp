@@ -45,7 +45,7 @@
             @enderror
             <div class="dropdown-container">
                 <label for="admin-dropdown" style="font-size: 30px;">Privileges:</label>
-                <select id="admin-dropdown" name="admin_privileges" class="dropdown">
+                <select id="admin-dropdown" name="admin_privileges" class="dropdown" style="padding:1rem 1.5rem; text-align:left">
                     @if ($admin->privileges == 1)
                         <option selected>Semi-Admin</option>
                         <option>Admin</option>

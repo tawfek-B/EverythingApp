@@ -110,24 +110,26 @@
         </div>
     </x-cardcontainer>
 
+
     @if ($modelToPass->total() > 1)
+        {{-- Only show if more than 1 result --}}
         <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: #000000;">
             Showing {{ $modelToPass->firstItem() }} to {{ $modelToPass->lastItem() }} of {{ $modelToPass->total() }}
             universities
         </div>
+    @else
+        <div class="pagination-info" style="display: none;"></div> {{-- Hidden container --}}
     @endif
 
-    @if ($modelToPass->total() > 10)
-        <div class="pagination">
-            {{ $modelToPass->appends([
-                    'search' => $searchQuery,
-                    'sort' => $sort,
-                    'subjects' => $selectedSubjects,
-                    'none' => $filterNone,
-                    'subject_count' => request('subject_count', []),
-                ])->links() }}
-        </div>
-    @endif
+    <div class="pagination" style="@if ($num <= 10) display:none; @endif">
+        {{ $modelToPass->appends([
+                'search' => $searchQuery,
+                'sort' => $sort,
+                'subjects' => $selectedSubjects,
+                'none' => $filterNone,
+                'subject_count' => request('subject_count', []),
+            ])->links() }}
+    </div>
 </x-layout>
 
 <script>

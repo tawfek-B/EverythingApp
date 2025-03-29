@@ -82,7 +82,6 @@ class SubjectController extends Controller
     public function fetchAll()
     {
         return response()->json([
-            'success' => "true",
             'subjects' => Subject::all(),
         ]);
     }

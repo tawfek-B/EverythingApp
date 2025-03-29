@@ -2,7 +2,7 @@
 
 <x-layout>
     <x-breadcrumb :links="['Home' => url('/welcome'), 'University' => url('/universities'), $university->name => Request::url()]" :align=true />
-    <x-infocard :editLink="'university/edit/' . $university->id" :object=$university
+    <x-infocard :editLink="'university/edit/' . $university->id" :deleteLink="'deleteuniversity/' . $university->id" :object=$university
         objectType="University" name="{{ $university->name }}" image="{{ asset($university->image) }}">
         University name: {{ $university->name }}<br>
         Teachers: @if ($university->teachers->count() == 0)

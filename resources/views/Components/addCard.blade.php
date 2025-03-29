@@ -31,17 +31,19 @@
     }
 
     .ObjectContainer {
-        width: 30%;
+        width:40rem;
         height: auto;
         display: flex;
         flex-direction: column;
         border: black 5px solid;
         align-items: center;
-        background: #6699CC;
         justify-content: center;
         border-radius: 15px;
         margin-bottom: 0;
         padding: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .textContainer {
@@ -62,14 +64,16 @@
         color: white;
         border-radius: 5px;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.3s ease;
     }
 
-    .submit-button:hover {
+    .submit-button:hover:not(:disabled) {
         background: white;
         color: black;
+        animation: pulse 1s infinite;
     }
 
+    .submit-button:disabled,
     .submit-button:disabled:hover {
         background-color: white;
         color: darkgray;
@@ -77,11 +81,18 @@
         cursor: not-allowed;
     }
 
-    .submit-button:disabled {
-        background-color: white;
-        color: darkgray;
-        border-color: darkgray;
-        cursor: not-allowed;
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(40, 40, 40, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(40, 40, 40, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(40, 40, 40, 0);
+        }
     }
 
     .image {
@@ -105,11 +116,15 @@
             @elseif ($object == 'Admin')
                 <img src="{{ asset('Admins/adminDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
+            @elseif ($object == 'University')
+                <img src="{{ asset('Universities/default.png') }}" alt="" id="image_preview" class="image"
+                    accept="image/*" onchange="validateImageSize(this)">
             @else
                 <img src="{{ asset($object . 's/default.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
             @endif
         </div>
+        <br>
         <div
             style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
             <label for="object_image">
@@ -119,7 +134,7 @@
             <input type="file" name="object_image" id="object_image"
                 placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                 onchange="validateImageSize(this)">
-            <label for="" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is less
+            <label for="object_image" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is less
                 than
                 2MB.<br>Recomended, 1:1 aspect ratio</label>
         </div>

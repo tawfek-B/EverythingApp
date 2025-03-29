@@ -71,7 +71,9 @@ class DatabaseSeeder extends Seeder
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
                 // 'type' => ('PDF'),
-                'file' => 'Files/default.mp4',
+                'file_360' => 'Files/360/default_360.mp4',
+                'file_720' => 'Files/720/default_720.mp4',
+                'file_1080' => 'Files/1080/default_1080.mp4',
                 'description' => fake()->text(),
                 'image' => 'Lectures/default.png',
                 'subject_id' => rand(1, Subject::count()),

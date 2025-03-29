@@ -10,6 +10,7 @@
     'objectModel' => null,
     'model' => null,
     'lectures' => false,
+    'subscribedLectureIds' => null,
 ])
 @if ($lectures != false)
     @php
@@ -22,12 +23,12 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        height:50%;
+        height: 50%;
         grid-row-gap: 10%;
     }
 
     .icon {
-        width:80%;
+        width: 80%;
         /* Adjust the size of the SVG icon */
         height: 80%;
         /* Adjust the size of the SVG icon */
@@ -44,17 +45,19 @@
     }
 
     .ObjectContainer {
-        width: 30%;
+        width: 40rem;
         height: auto;
         display: flex;
         flex-direction: column;
         border: black 5px solid;
         align-items: center;
-        background: #6699CC;
         justify-content: center;
         border-radius: 15px;
         margin-bottom: 0;
         padding: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .textContainer {
@@ -107,12 +110,13 @@
         color: white;
         border-radius: 5px;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.3s ease;
     }
 
-    .submit-button:hover {
+    .submit-button:hover:not(:disabled) {
         background: white;
         color: black;
+        animation: pulse 1s infinite;
     }
 
     .submit-button:disabled:hover,
@@ -121,6 +125,20 @@
         color: darkgray;
         border-color: darkgray;
         cursor: not-allowed;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(40, 40, 40, 0.7);
+        }
+
+        50% {
+            box-shadow: 0 0 0 8px rgba(40, 40, 40, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(40, 40, 40, 0);
+        }
     }
 
     .dropdown-container {
@@ -234,11 +252,11 @@
             </div>
             <div
                 style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
-                <label for="object_name">{{ $object }} Image:</label>
+                <label for="object_image">{{ $object }} Image:</label>
                 <input type="file" name="object_image" id="object_image"
                     placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                     onchange="validateImageSize(this)">
-                <label for="" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is
+                <label for="object_image" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is
                     less than 2MB.<br>Recomended, 1:1 aspect ratio</label>
             </div>
             @error('object_image')
@@ -257,7 +275,7 @@
             <br>
             <div class="dropdown-container">
                 <label for="subject-dropdown" style="font-size: 30px;">Add {{ $menu }}:</label>
-                <select id="subject-dropdown" class="dropdown">
+                <select id="subject-dropdown" class="dropdown" style="padding:0.5rem 2.5rem">
                     <option value="">Select a {{ $menu }}</option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
@@ -364,14 +382,16 @@
     <script>
         let initialValues = {};
         let submitButton = document.querySelector(".submit-button");
-        document.querySelectorAll("input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+        document.querySelectorAll(
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
             input => {
                 initialValues[input.name] = input.value;
             });
 
         function checkForChanges() {
             let hasChanged = false;
-            document.querySelectorAll("input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+            document.querySelectorAll(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
                 input => {
                     if (input.value !== initialValues[input.name]) hasChanged = true;
                 });
@@ -443,7 +463,8 @@
         function updateHiddenInput() {
             document.getElementById('selected_objects_input').value = JSON.stringify(Array.from(selectedSubjects));
         }
-        document.querySelectorAll("input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+        document.querySelectorAll(
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
             input => {
                 input.addEventListener("input", checkForChanges);
             });
@@ -456,7 +477,8 @@
             let form = document.querySelector("form");
             let initialValues = {};
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+            ).forEach(
                 input => {
                     initialValues[input.name] = input.value;
                 });
@@ -464,7 +486,8 @@
             function checkForChanges() {
                 let hasChanged = false;
                 document.querySelectorAll(
-                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea").forEach(
+                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+                ).forEach(
                     input => {
                         if (input.value !== initialValues[input.name]) hasChanged = true;
                     });

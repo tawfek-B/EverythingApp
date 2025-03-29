@@ -2,7 +2,7 @@
     .NavBar {
         width: 100%;
         background-color: #101010;
-        height: 60px;
+        height: 65px;
         /* Set a fixed height for the navbar */
         display: flex;
         flex-direction: row;

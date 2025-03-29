@@ -108,11 +108,11 @@
     }
 @endphp
 
-<x-layout :objects=true object="USERS">
+<x-layout :objects=true object='USERS'>
     <x-breadcrumb :links="array_merge(['Home' => url('/welcome')], ['Users' => Request::url()])" />
 
     <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
-        :showUsernameSort=true :showNameSort=false num="{{ $num }}">
+        :showUsernameSort=true :showNameSort=false>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedUsers as $chunk)
                 <div class="chunk">
@@ -152,15 +152,15 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: #000000;"
-            id="pagination">
+        {{-- Only show if more than 1 result --}}
+        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: #000000;">
             Showing {{ $modelToPass->firstItem() }} to {{ $modelToPass->lastItem() }} of {{ $modelToPass->total() }}
             users
         </div>
     @else
+        <div class="pagination-info" style="display: none;"></div> {{-- Hidden container --}}
     @endif
-
-    <div class="pagination">
+    <div class="pagination" style="@if ($modelToPass->total() <= 10) display:none; @endif">
         {{ $modelToPass->appends([
                 'search' => $searchQuery,
                 'sort' => $sort,
@@ -213,6 +213,7 @@
                     attachCircleEffect();
                     refreshAnimations();
 
+                    if (@json($usersCount) > 10) {
                         // Update pagination info text
                         const paginationInfo = doc.querySelector('.pagination-info');
                         const paginationInfoContainer = document.querySelector('.pagination-info');
@@ -230,6 +231,7 @@
                         } else {
                             paginationContainer.innerHTML = '';
                         }
+                    }
                 })
                 .catch(error => console.error('Error fetching search results:', error));
         });

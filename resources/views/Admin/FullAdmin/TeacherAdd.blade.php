@@ -67,10 +67,14 @@
                         </g>
                     </svg>
 
-                    <input type="url" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="facebook_link" placeholder="Enter the Facebook link">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="facebook_link"
+                        placeholder="Enter the Facebook link">
+                    @error('facebook_link')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="input-container">
+                {{-- <div class="input-container">
                     <!-- SVG Icon -->
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -87,9 +91,13 @@
                                 fill="#0F0F0F"></path>
                         </g>
                     </svg>
-                    <input type="url" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
+                    <input type="url" value="{{ $links['Instagram'] }}"
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;"
                         name="instagram_link" placeholder="Enter the Instagram link">
-                </div>
+                    @error('instagram_link')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div> --}}
                 <div class="input-container">
                     <!-- SVG Icon -->
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
@@ -102,9 +110,15 @@
                         </g>
                     </svg>
 
-                    <input type="url" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="telegram_link" placeholder="Enter the Telegram link">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="telegram_link"
+                        placeholder="Enter the Telegram link">
+                    @error('telegram_link')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr;gap:5%;">
                 <div class="input-container">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -119,8 +133,12 @@
                         </g>
                     </svg>
 
-                    <input type="url" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="youtube_link" placeholder="Enter the YouTube link">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="youtube_link"
+                        placeholder="Enter the YouTube link">
+                    @error('youtube_link')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

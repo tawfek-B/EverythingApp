@@ -17,7 +17,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/getuser/{id}', [UserController::class, 'fetch']);
 Route::post('/register', [SessionController::class, 'createUser']);
-Route::post('/login', action: [SessionController::class, 'loginUser']);
+Route::post('/login', [SessionController::class, 'loginUser']);
 
 
 //test
@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getuser/{id}', [UserController::class, 'fetch']);
     Route::get('/getusersubjects', [UserController::class, 'fetchSubjects']);
     Route::get('/getuserlectures', [UserController::class, 'fetchLectures']);
+    Route::get('/getusersubscriptions', [UserController::class, 'fetchSubs']);
     Route::get('/getallusers', [UserController::class, 'fetchAll']);
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
@@ -54,7 +55,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallsubjects', [SubjectController::class, 'fetchAll']);
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
-    Route::get('/getlecturefile/{id}', [LectureController::class, 'fetchFile']);
+    Route::get('/getlecturefile360/{id}', [LectureController::class, 'fetchFile360']);
+    Route::get('/getlecturefile720/{id}', [LectureController::class, 'fetchFile720']);
+    Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);
 
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);

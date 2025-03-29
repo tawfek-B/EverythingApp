@@ -184,64 +184,103 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
+        const filterForm = document.querySelector('.filter-dropdown');
+        const filterCheckboxes = document.querySelectorAll(
+            'input[type="checkbox"][name^="subjects"], input[name="none"], input[name^="subject_count"]');
+        const paginationInfoContainer = document.querySelector('.pagination-info');
+        const paginationContainer = document.querySelector('.pagination');
 
-        searchBar.addEventListener('input', function() {
+        // Function to fetch and update results
+        function updateResults() {
             const query = searchBar.value;
-
-            // Get current filter values
-            const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
-                'newest';
-            const selectedSubjects = Array.from(document.querySelectorAll(
-                'input[name="subjects[]"]:checked')).map(el => el.value);
+            const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
+            const selectedSubjects = Array.from(document.querySelectorAll('input[name="subjects[]"]:checked'))
+                .map(el => el.value);
             const filterNone = document.getElementById('filter-none')?.checked || false;
-            const subjectCounts = Array.from(document.querySelectorAll(
-                'input[name="subject_count[]"]:checked')).map(el => el.value);
+            const subjectCounts = Array.from(document.querySelectorAll('input[name="subject_count[]"]:checked'))
+                .map(el => el.value);
 
-
-            // Build the query string
+            // Build query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
             selectedSubjects.forEach(subject => params.append('subjects[]', subject));
-            if (filterNone) {
-                params.set('none', 'true');
-            }
+            if (filterNone) params.set('none', 'true');
             subjectCounts.forEach(count => params.append('subject_count[]', count));
 
-            // Fetch results via AJAX
+            paginationInfoContainer.innerHTML = '';
+            paginationContainer.innerHTML = '';
+
             fetch(`{{ request()->url() }}?${params.toString()}`)
                 .then(response => response.text())
                 .then(data => {
-                    // Parse the response and extract the dynamic content
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
                     const newContent = doc.getElementById('dynamic-content').innerHTML;
-
-                    // Update the dynamic content without changing the structure
                     dynamicContent.innerHTML = newContent;
-                    attachCircleEffect();
-                    refreshAnimations();
 
-                    if (@json($num) > 10) {
-                        const paginationInfo = doc.querySelector('.pagination-info');
-                        const paginationInfoContainer = document.querySelector('.pagination-info');
-                        if (paginationInfo) {
-                            paginationInfoContainer.innerHTML = paginationInfo.innerHTML;
+                    // Update pagination info (show if at least 1 result)
+                    const responsePaginationInfo = doc.querySelector('.pagination-info');
+                    if (responsePaginationInfo) {
+                        paginationInfoContainer.innerHTML = responsePaginationInfo.innerHTML;
+                    } else {
+                        // Check if we should show pagination info by extracting count from response
+                        const countMatch = doc.body.textContent.match(/of (\d+) teachers/);
+                        const totalCount = countMatch ? parseInt(countMatch[1]) : 0;
+
+                        if (totalCount > 0) {
+                            // Reconstruct pagination info
+                            const firstItem = 1;
+                            const lastItem = Math.min(10, totalCount);
+                            paginationInfoContainer.innerHTML =
+                                `Showing ${firstItem} to ${lastItem} of ${totalCount} teachers`;
                         } else {
                             paginationInfoContainer.innerHTML = '';
                         }
+                    }
 
-                        // Update pagination links conditionally
-                        const pagination = doc.querySelector('.pagination');
-                        const paginationContainer = document.querySelector('.pagination');
-                        if (pagination) {
-                            paginationContainer.innerHTML = pagination.innerHTML;
+                    // Update pagination controls (show if >10 results)
+                    const responsePagination = doc.querySelector('.pagination');
+                    if (responsePagination) {
+                        paginationContainer.innerHTML = responsePagination.innerHTML;
+                    } else {
+                        const totalCount = doc.querySelector('.pagination-info')?.textContent.match(
+                            /of (\d+) teachers/)?.[1] || 0;
+                        if (totalCount > 10) {
+                            // We should have pagination but it's missing from response
+                            // You may need to reconstruct it here if needed
                         } else {
                             paginationContainer.innerHTML = '';
                         }
                     }
+
+                    attachCircleEffect();
+                    refreshAnimations();
                 })
-                .catch(error => console.error('Error fetching search results:', error));
+                .catch(error => {
+                    paginationInfoContainer.innerHTML = '';
+                    paginationContainer.innerHTML = '';
+                });
+        }
+
+        // Handle search input with debounce
+        let searchTimeout;
+        searchBar.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(updateResults, 0);
         });
+
+        // Handle filter changes
+        if (filterForm) {
+            filterForm.addEventListener('change', updateResults);
+        }
+
+        // Handle individual checkbox changes
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateResults);
+        });
+
+        // Initial attachment of effects
+        attachCircleEffect();
     });
 </script>

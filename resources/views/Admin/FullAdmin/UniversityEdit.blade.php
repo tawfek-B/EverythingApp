@@ -13,7 +13,7 @@
                     University Name:
                 </label>
                 <input type="text" name="university_name" id="university_name" value="{{ $university->name }}"
-                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;" readonly>
+                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;">
             </div>
             @error('university_name')
                 <div class="error">{{ $message }}</div>

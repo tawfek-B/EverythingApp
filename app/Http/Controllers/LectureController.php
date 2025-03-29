@@ -35,13 +35,73 @@ class LectureController extends Controller
             ]);
         }
     }
-    public function fetchFile($id)
+    public function fetchFile360($id)
     {
 
         $lecture = Lecture::find($id);
         if ($lecture) {
 
-            $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file);
+            $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_360);
+
+            // Check if the file exists
+            if (!file_exists($filePath)) {
+                return response()->json([
+                    'success' => "false",
+                    'reason' => "File Not Found"
+                ]);
+            }
+
+            // Determine the MIME type of the file
+            $mimeType = mime_content_type($filePath);
+
+            // Return the file as a response with the appropriate headers
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+            ]);
+        } else {
+            return response()->json([
+                'success' => "false",
+                'reason' => "Lecture Not Found"
+            ]);
+        }
+    }
+    public function fetchFile720($id)
+    {
+
+        $lecture = Lecture::find($id);
+        if ($lecture) {
+
+            $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_720);
+
+            // Check if the file exists
+            if (!file_exists($filePath)) {
+                return response()->json([
+                    'success' => "false",
+                    'reason' => "File Not Found"
+                ]);
+            }
+
+            // Determine the MIME type of the file
+            $mimeType = mime_content_type($filePath);
+
+            // Return the file as a response with the appropriate headers
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+            ]);
+        } else {
+            return response()->json([
+                'success' => "false",
+                'reason' => "Lecture Not Found"
+            ]);
+        }
+    }
+    public function fetchFile1080($id)
+    {
+
+        $lecture = Lecture::find($id);
+        if ($lecture) {
+
+            $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_1080);
 
             // Check if the file exists
             if (!file_exists($filePath)) {
@@ -69,8 +129,10 @@ class LectureController extends Controller
     public function add(Request $request)
     {
         $name = $request->input('lecture_name');
-        $description = $request->input('lecture_description');
-        $file = $request->file('lecture_file');
+        // $description = $request->input('lecture_description');
+        $file360 = $request->file('lecture_file_360');
+        $file720 = $request->file('lecture_file_720');
+        $file1080 = $request->file('lecture_file_1080');
         $image = $request->file('object_image');
         $subject_id = $request->input('subject');
 
@@ -79,12 +141,19 @@ class LectureController extends Controller
         } else {
             $path = "Lectures/default.png";
         }
-        $filePath = $file->store('Files', 'public');
+        if ($file360 != null)
+            $filePath360 = $file360->store('Files/360', 'public');
+        if ($file720 != null)
+            $filePath720 = $file720->store('Files/720', 'public');
+        if ($file1080 != null)
+            $filePath1080 = $file1080->store('Files/1080', 'public');
         $lecture = Lecture::create([
             'name' => $name,
-            'description' => $description,
+            // 'description' => $description,
             'image' => $path,
-            'file' => $filePath,
+            'file_360' => $filePath360 ?? null,
+            'file_720' => $filePath720 ?? null,
+            'file_1080' => $filePath1080 ?? null,
             'subject_id' => $subject_id,
         ]);
         Subject::findOrFail($request->input('subject'))->lectures()->attach($lecture->id);
@@ -96,6 +165,7 @@ class LectureController extends Controller
 
     public function edit(Request $request, $id)
     {
+        // dd($request->all());
         $lecture = Lecture::findOrFail($id);
         $lecture->name = $request->lecture_name;
         $lecture->description = $request->lecture_description;
@@ -105,6 +175,18 @@ class LectureController extends Controller
                 Storage::disk('public')->delete($lecture->image);
             }
             $lecture->image = str_replace('public\\', '', $path);//this replaces what's already in the user logo for the recently stored new pic
+        }
+        if (!is_null($request->file('lecture_file_360'))) {
+            $filePath360 = $request->file('lecture_file_360')->store('Files/360', 'public');
+            $lecture->file_360 = $filePath360;
+        }
+        if (!is_null($request->file('lecture_file_720'))) {
+            $filePath720 = $request->file('lecture_file_720')->store('Files/720', 'public');
+            $lecture->file_720 = $filePath720;
+        }
+        if (!is_null($request->file('lecture_file_1080'))) {
+            $filePath1080 = $request->file('lecture_file_1080')->store('Files/1080', 'public');
+            $lecture->file_1080 = $filePath1080;
         }
         $lecture->save();
         $data = ['element' => 'lecture', 'id' => $id, 'name' => $lecture->name];
@@ -117,7 +199,8 @@ class LectureController extends Controller
     {
         $lecture = Lecture::findOrFail($id);
         $name = $lecture->name;
-        Storage::disk('public')->delete($lecture->image);
+        if ($lecture->image != "Lectures/default.png")
+            Storage::disk('public')->delete($lecture->image);
         Storage::disk('public')->delete($lecture->file);
         $lecture->delete();
 

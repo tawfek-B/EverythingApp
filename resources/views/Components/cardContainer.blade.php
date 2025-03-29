@@ -49,7 +49,7 @@
         background-color: #FFFFFF;
         border-color: #29C829;
         color: #29C829;
-        box-shadow: 0 0.25rem 0.5rem 0.1rem #29C829;
+        box-shadow: 0 0 0.5rem 0 #29C829;
 
     }
 
@@ -151,6 +151,55 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    /* Add to your existing styles */
+    .ObjectContainer {
+        perspective: 1200px;
+        /* Stronger 3D perspective */
+    }
+
+    .Object {
+        transition:
+            transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 1.1),
+            opacity 0.3s ease,
+            filter 0.3s ease;
+        transform-style: preserve-3d;
+        will-change: transform, box-shadow;
+    }
+
+    /* Hovered card - 3D pop effect */
+    .Object:hover {
+        transform:
+            translateY(-12px) scale(1.03) rotateX(8deg) rotateY(2deg);
+        box-shadow:
+            0 20px 30px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        filter: brightness(1.1) drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+        z-index: 20;
+    }
+
+    /* Non-hovered cards - subtle retreat */
+    .ObjectContainer:has(.Object:hover) .Object:not(:hover) {
+        opacity: 0.6;
+        transform:
+            translateZ(-20px) scale(0.96);
+        filter:
+            brightness(0.8) blur(1px);
+    }
+
+    /* Circle effect enhancement */
+    .Object:hover .circle {
+        opacity: 1;
+        transition:
+            opacity 0.3s ease,
+            transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    }
+
+    .Object:hover {
+        background: linear-gradient(135deg,
+                rgba(25, 62, 108, 1) 0%,
+                rgba(42, 92, 152, 1) 100%);
+    }
 </style>
 <div style="width:80%; display:flex;flex-direction:row;">
     <!-- Search Form -->
@@ -225,7 +274,9 @@
                 <!-- Filter by Teachers (for subjects) -->
                 @if (!empty($filterOptions) && $filterByTeachers)
                     <label><strong>Filter By Teachers:</strong></label>
-                    <button type="button" id="toggle-all" style="@if ($showUsernameSort && $showNameSort) top:40% @elseif ($showUsernameSort || $showNameSort) top:26% @else top:40% @endif">Select All</button>
+                    <button type="button" id="toggle-all"
+                        style="@if ($showUsernameSort && $showNameSort) top:40% @elseif ($showUsernameSort || $showNameSort) top:26% @else top:40% @endif">Select
+                        All</button>
                     <div class="filter-columns" style="margin-top:4%;">
                         @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                             <div class="filter-column">
@@ -316,7 +367,22 @@
                 clearTimeout(scrollTimer);
                 scrollTimer = setTimeout(() => {
                     document.body.classList.remove('disable-hover');
-                }, 200);
+                }, 2000);
+            });
+            // Inside your existing attachCircleEffect() function:
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+
+                // Trigger animation
+                this.classList.add('disappear');
+
+                // Wait for animation to complete before navigation
+                setTimeout(() => {
+                    if (href && href !== '#') {
+                        window.location.href = href;
+                    }
+                }, 1000); // Shorter than animation duration
             });
         });
     }

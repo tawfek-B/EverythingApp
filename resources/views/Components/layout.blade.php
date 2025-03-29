@@ -30,12 +30,159 @@
             animation: gradientShift 5s infinite;
         }
 
+        /* Style for all select elements */
+        select {
+            /* Basic styling */
+            padding: 1rem 1rem;
+            border: 2px solid #6699CC;
+            border-radius: 20px;
+            /* Rounded corners */
+            background-color: #6699CC;
+            /* Background color */
+            color: black;
+            /* Text color */
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            /* Remove default styling */
+            -webkit-appearance: none;
+            /* For Safari */
+            -moz-appearance: none;
+            /* For Firefox */
+
+            /* Add a custom dropdown arrow */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 35px;
+
+            /* Transition for smooth effects */
+            transition: all 0.3s ease;
+        }
+
+        /* Hover state */
+        select:hover {
+            background-color: #5a8bb8;
+            border-color: #5a8bb8;
+        }
+
+        /* Focus state */
+        select:focus {
+            border-color: #4a7aa3;
+            box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.3);
+        }
+
+        select option {
+            background-color: white;
+            color: black;
+            padding: 10px;
+        }
+
+        /* Style for dropdown menu appearance */
+        select {
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        select option:hover {
+            background-color: #6699CC;
+            color: white;
+        }
+
+        /* For browsers that support the ::backdrop pseudo-element */
+        select::backdrop {
+            background-color: rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+        }
+
         .error {
             color: red;
             font-size: 1rem;
             margin-top: 5px;
             text-align: center;
             font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Hide the actual file input */
+        .hidden-file-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+
+        /* Style the label to look like your select */
+        .file-input-label {
+            /* Match your select styles */
+            display: inline-block;
+            padding: 0 5rem;
+            border: 2px solid #6699CC;
+            border-radius: 20px;
+            background-color: #6699CC;
+            color: black;
+            font-size: 60%;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+
+            /* Match your arrow styling */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        /* Hover state */
+        .file-input-label:hover {
+            background-color: #5a8bb8;
+            border-color: #5a8bb8;
+        }
+
+        .file-input-label:disabled {
+            background: none;
+        }
+
+        /* Focus state */
+        .hidden-file-input:focus+.file-input-label {
+            border-color: #4a7aa3;
+            box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.3);
+        }
+
+        /* Disabled state for the entire container */
+        .custom-file-input input[disabled]~.file-input-label {
+            background-color: #f0f0f0;
+            /* Light gray background */
+            border-color: #cccccc;
+            /* Lighter border */
+            color: #888888;
+            /* Muted text color */
+            cursor: not-allowed;
+            /* Show "not allowed" cursor */
+            background-image: none;
+            /* Remove the arrow icon */
+        }
+
+        /* Hover state should be neutral when disabled */
+        .custom-file-input input[disabled]~.file-input-label:hover {
+            background-color: #f0f0f0;
+            border-color: #cccccc;
+        }
+
+        /* Text display when disabled */
+        .custom-file-input input[disabled]~.file-input-label .file-input-text {
+            color: #666666;
+            font-style: italic;
+        }
+
+        /* Show selected filename */
+        .file-input-text::after {
+            content: attr(data-file);
+            margin-left: 10px;
+            font-style: italic;
         }
 
         @keyframes gradientShift {
@@ -79,6 +226,13 @@
         });
     }
     window.onload = setActiveLink;
+</script>
+<script>
+    document.querySelectorAll('select').forEach(select => {
+        select.addEventListener('click', function() {
+            this.style.transition = 'all 0.3s ease';
+        });
+    });
 </script>
 
 </html>

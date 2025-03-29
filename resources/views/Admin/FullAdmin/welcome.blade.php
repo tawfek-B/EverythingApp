@@ -31,6 +31,7 @@
         .button:hover {
             border-radius: 10px;
             border: #6699CC 2.5px solid;
+            animation: shadow 1.5s linear infinite;
         }
 
         .disable-hover .button:hover {
@@ -82,6 +83,18 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1;
+        }
+
+        @keyframes shadow {
+            0% {
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0,0,0,0.8);
+            }
+            50% {
+                box-shadow: 0 0 0 0 transparent;
+            }
+            100% {
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0,0,0,0.8);
+            }
         }
     </style>
 </head>

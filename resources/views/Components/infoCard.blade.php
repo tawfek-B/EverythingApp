@@ -12,11 +12,12 @@
     'warning' => null,
     'privileges' => null,
     'file' => null,
+    'addLecture' => null,
 ])
 <style>
     .ObjectContainer {
         padding: 1%;
-        width: 30%;
+        width: 40rem;
         height: 150%;
         display: flex;
         flex-direction: column;
@@ -63,8 +64,7 @@
         flex-direction: column;
         align-items: center;
         gap: 15px;
-        height: 25%;
-        width: 15%;
+        width: fit-content;
     }
 
     .button {
@@ -74,13 +74,13 @@
         font-size: 20px;
         color: black;
         text-align: center;
-        height: fit-content;
-        width: fit-content;
         font-family: 'Just Another Hand';
         margin-bottom: 2rem;
         padding: 0.5rem 0.5rem;
         border-radius: 7.5%;
         transition: 0.5s ease;
+        height: fit-content;
+        width: fit-content;
     }
 
     .button:hover {
@@ -94,7 +94,10 @@
         background-color: white;
         border-color: darkgray;
         color: darkgray;
+        cursor: not-allowed;
+        margin-bottom: 2rem;
         height: fit-content;
+        width: fit-content;
     }
 
     .deleteButton {
@@ -146,7 +149,33 @@
         </div>
     @endif
     @if ($file != null)
-        <a href="show/{{ $object->id }}" target="_blank" class="button" style="background-color:#6699CC">Show
+        <div style="height:fit-content">
+
+            @if ($object->file_360 != null)
+                <a href="show/{{ $object->id }}/360" target="_blank" class="button"
+                    style="background-color:#6699CC">Show
+                    Lecture 360p</a>
+            @else
+                <button class="button" disabled> Show Lecture 360</button>
+            @endif
+            @if ($object->file_720 != null)
+                <a href="show/{{ $object->id }}/720" target="_blank" class="button"
+                    style="background-color:#6699CC">Show
+                    Lecture 720</a>
+            @else
+                <button class="button" disabled> Show Lecture 720</button>
+            @endif
+            @if ($object->file_1080 != null)
+                <a href="show/{{ $object->id }}/1080" target="_blank" class="button"
+                    style="background-color:#6699CC; margin-left:auto;margin-right:auto;">Show
+                    Lecture 1080</a>
+            @else
+                <button class="button" style="margin-left:auto;margin-right:auto;" disabled> Show Lecture 1080</button>
+            @endif
+        </div>
+    @endif
+    @if ($addLecture != null)
+        <a href="addlecture/{{ $object->id }}" class="button" style="background-color:#6699CC">Add
             Lecture</a>
     @endif
     {{-- <div style="margin-bottom:5%;">
