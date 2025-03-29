@@ -51,7 +51,7 @@
     </div>
     <div style="text-align: center; margin-top: 2%; font-size:2.5rem;">
         <h1>
-            You Have Logged out Successfully
+            You Have Logged out Successfully.
             <br>
             Thank You for Contributing to Everything App!
         </h1>

@@ -27,7 +27,7 @@
         </select>
         <br>
         <br>
-        <span>Video File:</span>
+        <span>Video File (upload at least one):</span>
         <br>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
             <div>
@@ -64,41 +64,70 @@
                 </div>
             </div>
         </div>
+        <div id="file-error" style="color: red; display: none; text-align: center;">
+            Please upload at least one video file (360p, 720p, or 1080p)
+        </div>
         <br>
     </x-addcard>
 
     <script>
-        // Function to handle file input changes
-        function setupFileInput(inputId, textId) {
-            const input = document.getElementById(inputId);
-            const textElement = document.getElementById(textId);
+    // Function to handle file input changes (keep this as is)
+    function setupFileInput(inputId, textId) {
+        const input = document.getElementById(inputId);
+        const textElement = document.getElementById(textId);
 
-            input.addEventListener('change', function(event) {
-                const file = event.target.files[0];
+        input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
 
-                if (file) {
-                    // Check file type
-                    const allowedTypes = ['video'];
-                    const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
+            if (file) {
+                // Check file type
+                const allowedTypes = ['video'];
+                const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
 
-                    if (!isAllowed) {
-                        alert('Invalid file type. Please upload a video file.');
-                        event.target.value = '';
-                        textElement.textContent = 'Choose a file';
-                        return;
-                    }
-
-                    // Update the display text
-                    textElement.textContent = file.name;
-                } else {
+                if (!isAllowed) {
+                    alert('Invalid file type. Please upload a video file.');
+                    event.target.value = '';
                     textElement.textContent = 'Choose a file';
+                    return;
                 }
+
+                // Update the display text
+                textElement.textContent = file.name;
+            } else {
+                textElement.textContent = 'Choose a file';
+            }
+
+            // Hide error message when a file is selected
+            document.getElementById('file-error').style.display = 'none';
+        });
+    }
+
+    // Form validation function
+    function validateLectureForm() {
+        const file360 = document.getElementById('actual-file-input-360').files.length;
+        const file720 = document.getElementById('actual-file-input-720').files.length;
+        const file1080 = document.getElementById('actual-file-input-1080').files.length;
+
+        if (!file360 && !file720 && !file1080) {
+            document.getElementById('file-error').style.display = 'block';
+
+            // Scroll to error message
+            document.getElementById('file-error').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
             });
+
+            return false; // Prevent form submission
         }
 
-        // Set up all file inputs
+        return true; // Allow form submission
+    }
+
+    // Set up all file inputs when page loads
+    document.addEventListener('DOMContentLoaded', function() {
         setupFileInput('actual-file-input-360', 'file-input-text-360');
         setupFileInput('actual-file-input-720', 'file-input-text-720');
         setupFileInput('actual-file-input-1080', 'file-input-text-1080');
-    </script>
+    });
+</script>
 </x-layout>

@@ -128,6 +128,24 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
+        $request->validate([
+            'lecture_file_360' => 'nullable|file|mimetypes:video/*',
+            'lecture_file_720' => 'nullable|file|mimetypes:video/*',
+            'lecture_file_1080' => 'nullable|file|mimetypes:video/*',
+        ], [
+            'required_without_all' => 'Please upload at least one video file',
+        ]);
+
+        // Custom validation to ensure at least one file is uploaded
+        if (
+            !$request->hasFile('lecture_file_360') &&
+            !$request->hasFile('lecture_file_720') &&
+            !$request->hasFile('lecture_file_1080')
+        ) {
+            return back()->withErrors([
+                'video' => 'Please upload at least one video file'
+            ]);
+        }
         $name = $request->input('lecture_name');
         // $description = $request->input('lecture_description');
         $file360 = $request->file('lecture_file_360');
@@ -201,7 +219,9 @@ class LectureController extends Controller
         $name = $lecture->name;
         if ($lecture->image != "Lectures/default.png")
             Storage::disk('public')->delete($lecture->image);
-        Storage::disk('public')->delete($lecture->file);
+        Storage::disk('public')->delete($lecture->file_360);
+        Storage::disk('public')->delete($lecture->file_720);
+        Storage::disk('public')->delete($lecture->file_1080);
         $lecture->delete();
 
 

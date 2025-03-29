@@ -72,11 +72,9 @@
     <x-breadcrumb :links="array_merge(
         ['Home' => url('/welcome')],
         [
-            $user
-                ? App\Models\User::findOrFail(session('user'))->userName . ' subscribed lectures'
-                : (!$lec
-                    ? 'Lectures'
-                    : 'Lectures from ' . App\Models\Subject::findOrFail(session('subject'))->name) => Request::url(),
+            !$lec
+                ? 'Lectures'
+                : 'Lectures from ' . App\Models\Subject::findOrFail(session('subject'))->name => Request::url(),
         ],
     )" />
 
@@ -88,12 +86,12 @@
                     @foreach ($chunk as $lecture)
                         <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
                             ● Lecture Name: {{ $lecture->name }}<br>
-                            ● Lecture Description:
+                            {{-- ● Lecture Description:
                             <div class="description">
                                 @foreach (explode("\n", $lecture->description) as $line)
                                     <div class="description-line">{{ $line }}</div>
                                 @endforeach
-                            </div>
+                            </div> --}}
                             ● For Subject: {{ $lecture->subject->name }}
                         </x-card>
                     @endforeach

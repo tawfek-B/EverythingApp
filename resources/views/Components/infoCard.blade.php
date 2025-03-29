@@ -63,7 +63,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 15px;
+        gap: 25px;
         width: fit-content;
     }
 
@@ -149,7 +149,7 @@
         </div>
     @endif
     @if ($file != null)
-        <div style="height:fit-content">
+        <div style="height:fit-content;">
 
             @if ($object->file_360 != null)
                 <a href="show/{{ $object->id }}/360" target="_blank" class="button"

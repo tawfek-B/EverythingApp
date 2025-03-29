@@ -75,18 +75,10 @@
         <br>
         @if ($links['Facebook'])
             <a href="{{ $links['Facebook'] }}" target="_blank">Facebook</a>
-            @if ($links['Instagram'] || $links['Telegram'] || $links['YouTube'])
-                -
-            @endif
-        @endif
-
-        @if ($links['Instagram'])
-            <a href="{{ $links['Instagram'] }}">Instagram</a>
             @if ($links['Telegram'] || $links['YouTube'])
                 -
             @endif
         @endif
-
         @if ($links['Telegram'])
             <a href="{{ $links['Telegram'] }}">Telegram</a>
             @if ($links['YouTube'])

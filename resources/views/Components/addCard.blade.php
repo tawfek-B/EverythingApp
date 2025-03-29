@@ -31,7 +31,7 @@
     }
 
     .ObjectContainer {
-        width:40rem;
+        width: 40rem;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -107,7 +107,7 @@
 
 <div class="ObjectContainer">
     <form action="/{{ $link }}" method="POST" style="display:flex;flex-direction:column"
-        enctype="multipart/form-data">
+        enctype="multipart/form-data" @if ($object == 'Lecture') onsubmit="return validateLectureForm()" @endif>
         @csrf
         <div style="width:50%; height:10%; margin-left:auto; margin-right:auto">
             @if ($object == 'Teacher')
@@ -134,7 +134,8 @@
             <input type="file" name="object_image" id="object_image"
                 placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                 onchange="validateImageSize(this)">
-            <label for="object_image" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is less
+            <label for="object_image" style="color:#333333; font-size:2rem; text-align:center">Make sure the size is
+                less
                 than
                 2MB.<br>Recomended, 1:1 aspect ratio</label>
         </div>
