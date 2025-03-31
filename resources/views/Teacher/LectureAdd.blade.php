@@ -78,6 +78,40 @@
     </x-addcard>
 
     <script>
+        // Scroll to error message
+        if (@json($subjectID)) {
+            function smoothScrollToElement(element, duration = 1000) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const startPosition = window.pageYOffset;
+                const distance = elementPosition - 400; // Adjust offset (e.g., -100px from top)
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const scrollAmount = easeInOutQuad(
+                        timeElapsed,
+                        startPosition,
+                        distance,
+                        duration
+                    );
+                    window.scrollTo(0, scrollAmount);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                function easeInOutQuad(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return (c / 2) * t * t + b;
+                    t--;
+                    return (-c / 2) * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            // Usage
+            smoothScrollToElement(document.getElementById('subject'), 1200); // 800ms duration
+        }
         // Function to handle file input changes
         function setupFileInput(inputId, textId) {
             const input = document.getElementById(inputId);

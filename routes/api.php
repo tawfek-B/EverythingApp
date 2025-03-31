@@ -10,6 +10,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\FileController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -69,5 +70,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser']);
 
+
+    Route::get('/url/{videoId}/{quality}', [FileController::class, 'encryptAndGenerateUrl']);
+
+    Route::get('/download-encrypted-video/{file}', [FileController::class, 'serveEncryptedFile'])
+        ->name('download.encrypted.video');
 
 });

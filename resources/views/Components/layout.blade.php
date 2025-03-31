@@ -9,8 +9,19 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Just+Another+Hand&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
+
+    <link rel="icon" href="{{ asset('storage/Web/favicon.ico') }}" sizes="any">
+
+    <link rel="icon" href="{{ asset('storage/Web/favicon.svg') }}" type="image/svg+xml">
+
+    <link rel="icon" href="{{ asset('storage/Web/favicon-32x32.png') }}" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('storage/Web/favicon-16x16.png') }}" type="image/png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="{{ asset('Web/apple-touch-icon.png') }}" sizes="180x180">
+
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Everything App</title>
+    <title>Everything</title>
 
     <style>
         body {

@@ -154,7 +154,7 @@ class TeacherController extends Controller
             ];
         }
 
-        return response()->json($response);
+        return response()->json([Teacher::count() ? $response : null]); //
     }
     public function add(Request $request)
     {

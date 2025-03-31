@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\university;
+use App\Models\Teacher;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,7 +32,7 @@ class UniversityController extends Controller
     public function fetchall()
     {
         return response()->json([
-            'universities' => university::all(),
+            'universities' => university::count() ? university::all() : null,
         ]);
     }
 
@@ -72,7 +73,7 @@ class UniversityController extends Controller
 
         return response()->json([
             'success' => true,
-            'teachers' => $teachers
+            'teachers' => $teachers->count() ? $teachers : null,
         ]);
     }
 
