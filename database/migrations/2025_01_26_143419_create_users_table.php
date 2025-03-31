@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('countryCode');
             $table->string('number')->unique();
             $table->string('password');
+            // $table->string('deviceId');
             $table->rememberToken();
             $table->timestamps();
         });

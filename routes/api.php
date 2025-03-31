@@ -35,6 +35,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getuserlectures', [UserController::class, 'fetchLectures']);
     Route::get('/getusersubscriptions', [UserController::class, 'fetchSubs']);
     Route::get('/getallusers', [UserController::class, 'fetchAll']);
+    Route::get('/subjectissubscribed/{id}', [UserController::class, 'confirmSubSub']);
+    Route::get('/lectureissubscribed/{id}', [UserController::class, 'confirmLecSub']);
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
 

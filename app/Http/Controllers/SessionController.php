@@ -19,9 +19,15 @@ class SessionController extends Controller
         $validator = Validator::make($request->all(), [
             'userName' => 'required|string|unique:users,userName',
             'number' => 'required|string|unique:users,number',
+
+            // 'deviceId' => 'required|string|unique:users,deviceId',
+
         ], [
             'userName.unique' => 'Already Used',
             'number.unique' => 'Already Used',
+
+            // 'deviceId.unique' => 'Already Used',
+
         ]);//this will check if these are unique or already in use by other users
         //we return each one that wasn't unique so the frontend can highlight all the fields that are already in use
 
@@ -36,6 +42,9 @@ class SessionController extends Controller
             $userName = $request->input('userName'),
             $number = $request->input('number'),
             $password = Hash::make($request->input('password')),
+
+            // $deviceId = $request->input('devceId'),
+
             $countryCode = "+963",
         ]);
 
@@ -44,6 +53,9 @@ class SessionController extends Controller
             'number' => $number,
             'password' => $password,
             'countryCode' => $countryCode,
+
+            // 'deviceId' => $deviceId,
+
         ]);
         $token = $user->createToken('API Token Of' . $user->name)->plainTextToken;
         $user->remember_token = $token;
@@ -57,52 +69,67 @@ class SessionController extends Controller
         $credentials = $request->validate([
             'userName' => 'required',
             'password' => 'required',
+
+            // 'deviceId' => 'required',
+
         ]);
 
         // // Attempt to authenticate the user
         // if (Auth::guard('api')->attempt($credentials)) {
-            // $credentials = $request->validate([
-            //     'userName' => 'required',
-            //     'password' => 'required',
-            // ]);
+        // $credentials = $request->validate([
+        //     'userName' => 'required',
+        //     'password' => 'required',
+        // ]);
 
-            // // Find the user by userName
-            $user = User::where('userName', $credentials['userName'])->first();
+        // // Find the user by userName
+        $user = User::where('userName', $credentials['userName'])->first();
 
-            // Check if the user exists and the password is correct
-            if ($user && Hash::check($credentials['password'], $user->password)) {
-                // Generate a token for the user
-                $token = $user->createToken('API Token')->plainTextToken;
-                $user->remember_token = $token;
-                return response()->json([
-                    'success' => true,
-                    'token' => $token,
-                    'user' => $user,
-                ]);
-            } else {
+        // Check if the user exists and the password is correct
+        if ($user && Hash::check($credentials['password'], $user->password) /*&& $credentials['deviceId'] == $user->deviceId*/) {
+            // Generate a token for the user
+            $token = $user->createToken('API Token')->plainTextToken;
+            $user->remember_token = $token;
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user,
+            ]);
+        } else {
+
+
+            // if (!Hash::check($credentials['password'], $user->password))
+
+
                 return response()->json([
                     'success' => false,
                     'reason' => 'Invalid Credentials',
                 ], 401);
-            }
 
-            // $loginData = $request->validate([
-            //     'userName' => 'string|required|exists:users',
-            //     'password' => 'required'
-            // ]);
-            // $credentials = request(['email', 'password']);
 
-            // if(auth()->guard('user')->attempt($request->only('userName', 'password'))) {
-            //     $user = User::query()->select('users.*')->find(auth()->guard('user')->user()['id']);
-            //     $success = $user;
-            //     $success['token'] = $user->createToken('API Token', ['user'])->accessToken;
+            // elseif ($credentials['deviceId'] != $user->deviceId)
+            //     return response()->json([
+            //         'success' => false,
+            //         'reason' => 'Unknown Device',
+            //     ], 401);
+        }
 
-            //     return response()->json('worked');
-            // }
-            // else {
-            //     return response()->json('worked not');
+        // $loginData = $request->validate([
+        //     'userName' => 'string|required|exists:users',
+        //     'password' => 'required'
+        // ]);
+        // $credentials = request(['email', 'password']);
 
-            // }
+        // if(auth()->guard('user')->attempt($request->only('userName', 'password'))) {
+        //     $user = User::query()->select('users.*')->find(auth()->guard('user')->user()['id']);
+        //     $success = $user;
+        //     $success['token'] = $user->createToken('API Token', ['user'])->accessToken;
+
+        //     return response()->json('worked');
+        // }
+        // else {
+        //     return response()->json('worked not');
+
+        // }
     }
 
 
@@ -127,7 +154,8 @@ class SessionController extends Controller
         ]);
     }
 
-    public function loginView() {
+    public function loginView()
+    {
         if (auth()->check()) {
             return redirect()->route('welcome');
         }

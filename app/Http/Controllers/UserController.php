@@ -9,6 +9,7 @@ use App\Models\Subject;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -167,6 +168,95 @@ class UserController extends Controller
         return redirect()->route('update.confirmation')->with('link', '/users');
     }
 
+    public function confirmSubSub($id) {
+        return response()->json([
+            'success' => true,
+            'isSubscribed' => Auth::user()->subjects->pluck('id')->contains($id),
+        ]);
+    }
+
+    public function confirmLecSub($id) {
+        return response()->json([
+            'success' => true,
+            'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id),
+        ]);
+    }
+
+
+
+    // public function confirmSubSub($id) {
+    //     try {
+    //         if (!Auth::check()) {
+    //             return response()->json([
+    //                 'error' => 'Unauthenticated',
+    //                 'message' => 'User not logged in'
+    //             ], 401);
+    //         }
+
+    //         if (!is_numeric($id)) {
+    //             return response()->json([
+    //                 'error' => 'Invalid input',
+    //                 'message' => 'Subject ID must be numeric'
+    //             ], 422);
+    //         }
+
+    //         $user = Auth::user();
+
+    //         if (!$user->relationLoaded('subjects')) {
+    //             $user->load('subjects');
+    //         }
+
+    //         return response()->json([
+    //             'isSubscribed' => $user->subjects->pluck('id')->contains((int)$id),
+    //             'subject_id' => $id
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Server error',
+    //             'message' => 'An error occurred while checking subscription',
+    //             'details' => config('app.debug') ? $e->getMessage() : null
+    //         ], 500);
+    //     }
+    // }
+
+    // public function confirmLecSub($id) {
+    //     try {
+    //         if (!Auth::check()) {
+    //             return response()->json([
+    //                 'error' => 'Unauthenticated',
+    //                 'message' => 'User not logged in'
+    //             ], 401);
+    //         }
+
+    //         if (!is_numeric($id)) {
+    //             return response()->json([
+    //                 'error' => 'Invalid input',
+    //                 'message' => 'Lecture ID must be numeric'
+    //             ], 422);
+    //         }
+
+    //         $user = Auth::user();
+
+    //         if (!$user->relationLoaded('lectures')) {
+    //             $user->load('lectures');
+    //         }
+
+    //         return response()->json([
+    //             'isSubscribed' => $user->lectures->pluck('id')->contains((int)$id),
+    //             'lecture_id' => $id
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Server error',
+    //             'message' => 'An error occurred while checking lecture subscription',
+    //             'details' => config('app.debug') ? $e->getMessage() : null
+    //         ], 500);
+    //     }
+    // }
+
+
     public function updateUsername(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -207,6 +297,27 @@ class UserController extends Controller
                 'success' => "false",
                 'reason' => "Password Doesn't Match"
             ]);
+        }
+    }
+
+    public function deleteSubs()
+    {
+        if (Auth::user()->privileges == 2) {
+            foreach (User::all() as $user) {
+
+                DB::transaction(function () use ($user) {
+
+                    $user->lectures()->detach();
+
+                    $user->subjects()->detach();
+                });
+
+            }
+            $data = ['name' => "delete subs"];
+            session(['update_info' => $data]);
+            return redirect()->route('update.confirmation');
+        } else {
+            abort(403);
         }
     }
 

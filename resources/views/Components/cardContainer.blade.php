@@ -8,6 +8,7 @@
     'filterByTeachers' => false,
     'showPrivilegeFilter' => false, // New prop to control privilege filter visibility
     'num' => null,
+    'deleteSubs' => false,
 ])
 
 <head>
@@ -200,6 +201,29 @@
                 rgba(25, 62, 108, 1) 0%,
                 rgba(42, 92, 152, 1) 100%);
     }
+
+
+    .deleteSubs {
+        background-color: red;
+        border: 0.15rem white solid;
+        text-decoration: none;
+        font-size: 20px;
+        color: black;
+        text-align: center;
+        height: fit-content;
+        width: fit-content;
+        font-family: 'Just Another Hand';
+        padding: 0.5rem 0.5rem;
+        border-radius: 1rem;
+        transition: 0.5s ease;
+        cursor: pointer;
+    }
+
+    .deleteSubs:hover {
+        border-color: red;
+        background-color: black;
+        color: red;
+    }
 </style>
 <div style="width:80%; display:flex;flex-direction:row;">
     <!-- Search Form -->
@@ -326,6 +350,13 @@
     <div class="container">
         @if ($addLink != null)
             <a href="/{{ $addLink }}" class="addButton">ADD</a>
+        @endif
+        @if ($deleteSubs != false)
+            <form action="/deletesubs" method="POST" style="margin-left:auto;" onsubmit="return validateSubs()">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="deleteSubs">DELETE ALL SUBSCRIPTIONS</button>
+            </form>
         @endif
     </div>
 </div>
@@ -568,4 +599,8 @@
 
 
     });
+
+    function validateSubs() {
+        return confirm(`Are you sure you want to delete ALL subscriptions?\n\nThis action cannot be undone!`);
+    }
 </script>

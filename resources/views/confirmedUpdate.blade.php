@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,9 +42,15 @@
             @php
                 $info = session('update_info');
             @endphp
-            <h1>
-                {{ $info['name'] }} updated successfully!
-            </h1>
+            @if ($info['name'] == 'delete subs')
+                <h1>
+                    Subscriptions deleted successfully
+                </h1>
+            @else
+                <h1>
+                    {{ $info['name'] }} updated successfully!
+                </h1>
+            @endif
         @else
             <h1>Nothing to confirm!</h1>
         @endif

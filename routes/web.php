@@ -424,6 +424,8 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
 
+    Route::put('/deletesubs', [UserController::class, 'deleteSubs']);
+
     Route::get('/test', function () {
         dd(Subject::withCount('users')->find(16));
     });

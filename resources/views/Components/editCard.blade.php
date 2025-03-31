@@ -160,13 +160,13 @@
     }
 
     .dropbtn {
-        background-color: #EBEDF2;
-        color: #193E6C;
-        border: 0.25rem solid #193E6C;
+        background-color: #6699CC;
+        color: black;
+        border: none;
         padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 20px;
     }
 
     .dropdown-content {
@@ -558,10 +558,12 @@
         function selectLecture(element) {
             const lectureId = parseInt(element.getAttribute('data-lecture-id'));
             if (selectedLectures.has(lectureId)) {
-                selectedLectures.delete(lectureId);
-                element.style.backgroundColor = '';
-                element.style.color = '';
-                removeLectureButton(lectureId);
+
+                // selectedLectures.delete(lectureId);
+                // element.style.backgroundColor = '';
+                // element.style.color = '';
+                // removeLectureButton(lectureId);
+
             } else {
                 selectedLectures.add(lectureId);
                 element.style.backgroundColor = '';
