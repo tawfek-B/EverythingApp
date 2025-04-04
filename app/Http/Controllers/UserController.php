@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Subject;
+use App\Models\Lecture;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -146,6 +147,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $subjects = json_decode($request->selected_objects, true);
         $lectures = json_decode($request->selected_lectures, true);
+        $user->isBanned = $request->isBanned == "on" ? 1 : 0;
+
         if ($request->selected_lectures == null)
             $lectures = $user->lectures->pluck('id')->toArray();
         // dd($lectures);
@@ -168,17 +171,19 @@ class UserController extends Controller
         return redirect()->route('update.confirmation')->with('link', '/users');
     }
 
-    public function confirmSubSub($id) {
-        return response()->json([
-            'success' => true,
-            'isSubscribed' => Auth::user()->subjects->pluck('id')->contains($id),
-        ]);
-    }
+    // public function confirmSubSub($id)
+    // {
+    //     return response()->json([
+    //         'success' => true,
+    //         'isSubscribed' => Auth::user()->subjects->pluck('id')->contains($id),
+    //     ]);
+    // }
 
-    public function confirmLecSub($id) {
+    public function confirmLecSub($id)
+    {
         return response()->json([
             'success' => true,
-            'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id),
+            'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->subjects->pluck('id')->contains(Lecture::findOrFail($id)->subject_id),
         ]);
     }
 
@@ -321,6 +326,7 @@ class UserController extends Controller
         }
     }
 
+
     public function delete($id)
     {
         $user = User::findOrFail($id);
@@ -334,4 +340,5 @@ class UserController extends Controller
         session(['delete_info' => $data]);
         return redirect()->route('delete.confirmation')->with('link', '/users');
     }
+
 }

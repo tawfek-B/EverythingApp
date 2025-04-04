@@ -43,6 +43,7 @@ class SessionController extends Controller
             $number = $request->input('number'),
             $password = Hash::make($request->input('password')),
 
+
             // $deviceId = $request->input('devceId'),
 
             $countryCode = "+963",
@@ -53,7 +54,7 @@ class SessionController extends Controller
             'number' => $number,
             'password' => $password,
             'countryCode' => $countryCode,
-
+            'isBanned' => 0,
             // 'deviceId' => $deviceId,
 
         ]);
@@ -83,7 +84,12 @@ class SessionController extends Controller
 
         // // Find the user by userName
         $user = User::where('userName', $credentials['userName'])->first();
-
+        if ($user->isBanned) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Banned',
+            ], 401);
+        }
         // Check if the user exists and the password is correct
         if ($user && Hash::check($credentials['password'], $user->password) /*&& $credentials['deviceId'] == $user->deviceId*/) {
             // Generate a token for the user
@@ -100,10 +106,10 @@ class SessionController extends Controller
             // if (!Hash::check($credentials['password'], $user->password))
 
 
-                return response()->json([
-                    'success' => false,
-                    'reason' => 'Invalid Credentials',
-                ], 401);
+            return response()->json([
+                'success' => false,
+                'reason' => 'Invalid Credentials',
+            ], 401);
 
 
             // elseif ($credentials['deviceId'] != $user->deviceId)
@@ -132,6 +138,29 @@ class SessionController extends Controller
         // }
     }
 
+    public function banUser()
+    {
+        $user = Auth::user();
+
+        // Validate user can be banned
+        if ($user->isBanned) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Already banned'
+            ], 400);
+        }
+
+        $user->isBanned = true;
+        $user->save();
+
+        $user->remember_token = null;
+        $user->save();
+        $user->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 
     public function logoutUser()
     {

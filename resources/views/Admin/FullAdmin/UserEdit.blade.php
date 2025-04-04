@@ -1,12 +1,66 @@
 @props(['user' => App\Models\User::findOrFail(session('user'))])
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #f44336;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+</style>
+
 <x-layout>
 
     @php
         $assignedObjects = $user->subjects->pluck('id')->toArray();
     @endphp
 
-    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->subjects" object="User" :model=$user
-        menu="Subject" :menuModel="App\Models\Subject::all()" :lectures=true>
+    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->subjects" object="User" :model="$user"
+        menu="Subject" :menuModel="App\Models\Subject::all()" :lectures=true :isBanned="$user->isBanned">
         <div>
 
 
@@ -36,6 +90,19 @@
             @error('user_number')
                 <div class="error">{{ $message }}</div>
             @enderror
+            <div style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
+                <label for="isBanned" style="font-weight: bold;">
+                    User Status:
+                </label>
+                <label class="switch">
+                    <input type="checkbox" name="isBanned" id="isBanned"
+                           {{ $user->isBanned ? 'checked' : '' }}>
+                    <span class="slider round"></span>
+                </label>
+                <span style="margin-left: 10px;">
+                    {{ $user->isBanned ? 'Banned' : 'Active' }}
+                </span>
+            </div>
             <div style="background-color: black; width:100%; height:1px; margin-top:5%; margin-bottom:5%;"></div>
             <div>
                 <div style="margin-bottom:3%;">

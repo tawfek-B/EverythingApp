@@ -11,6 +11,7 @@
     'model' => null,
     'lectures' => false,
     'subscribedLectureIds' => null,
+    'isBanned' => null,
 ])
 @if ($lectures != false)
     @php
@@ -382,6 +383,14 @@
     <script>
         let initialValues = {};
         let submitButton = document.querySelector(".submit-button");
+        // Check banned status
+        let initialBannedStatus = @json($isBanned) ? (@json($isBanned) ? true : false) : null; // Changed to isBanned to match Laravel convention
+        const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
+        if (bannedCheckbox) {
+            if (bannedCheckbox.checked !== initialBannedStatus) {
+                hasChanged = true;
+            }
+        }
         document.querySelectorAll(
             "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
             input => {
@@ -395,6 +404,12 @@
                 input => {
                     if (input.value !== initialValues[input.name]) hasChanged = true;
                 });
+            const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
+            if (bannedCheckbox) {
+                if (bannedCheckbox.checked !== initialBannedStatus) {
+                    hasChanged = true;
+                }
+            }
             let initialSubjectsSet = new Set(@json($selectedSubjects).map(String));
             let selectedSubjectsSet = new Set([...selectedSubjects].map(String));
             if (!setsAreEqual(initialSubjectsSet, selectedSubjectsSet)) hasChanged = true;
@@ -404,6 +419,7 @@
                 if (!setsAreEqual(initialLecturesSet, selectedLecturesSet)) hasChanged = true;
             @endif
             submitButton.disabled = !hasChanged;
+            // Initialize banned checkbox listener
         }
 
         function setsAreEqual(setA, setB) {
@@ -422,7 +438,10 @@
                     toggleSubjectSelection(this, subjectId);
                 });
             });
-
+            const bannedCheckbox = document.getElementById('isBanned');
+            if (bannedCheckbox) {
+                bannedCheckbox.addEventListener('change', checkForChanges);
+            }
             document.getElementById('add-subject-btn').addEventListener('click', function() {
                 let dropdown = document.getElementById('subject-dropdown');
                 let selectedSubjectId = dropdown.value;
@@ -464,10 +483,10 @@
             document.getElementById('selected_objects_input').value = JSON.stringify(Array.from(selectedSubjects));
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
-            input => {
-                input.addEventListener("input", checkForChanges);
-            });
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+        ).forEach(input => {
+            input.addEventListener("input", checkForChanges);
+        });
         submitButton.disabled = true;
     </script>
 @else
@@ -476,6 +495,7 @@
             let submitButton = document.querySelector(".submit-button");
             let form = document.querySelector("form");
             let initialValues = {};
+
             document.querySelectorAll(
                 "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
             ).forEach(

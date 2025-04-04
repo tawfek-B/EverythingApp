@@ -36,7 +36,7 @@
         text-decoration: none;
         color: black;
         border-radius: 10px;
-        width: 20%;
+        width: 10rem;
         height: 100%;
         text-align: center;
         display: flex;
@@ -59,8 +59,8 @@
         height: 20px;
         border: 2px solid #ccc;
         border-radius: 10px;
-        font-size: 16px;
-        padding-left: 6%;
+        font-size: 1.5rem;
+        padding-left: 2.5rem;
         align-self: flex-start;
         margin-right: auto;
     }

@@ -31,15 +31,34 @@ class SubjectController extends Controller
     public function fetchLectures($id)
     {
         $subject = Subject::find($id);
-        if($subject) {
+
+        if ($subject) {
+            // Get the lectures collection
+            $lectures = $subject->lectures;
+
+            // Transform each lecture's structure
+            $transformedLectures = $lectures->map(function ($lecture) {
+                return [
+                    'id' => $lecture->id,
+                    'name' => $lecture->name,
+                    'file_360' => asset($lecture->file_360),
+                    'file_720' => asset($lecture->file_720),
+                    'file_1080' => asset($lecture->file_1080),
+                    'description' => $lecture->description,
+                    'image' => $lecture->image,
+                    'subject_id' => $lecture->subject_id,
+                    'created_at' => $lecture->created_at,
+                    'updated_at' => $lecture->updated_at,
+                ];
+            });
+
             return response()->json([
-                'success' => "true",
-                'lectures' => $subject->lectures,
+                'success' => true,
+                'lectures' => $transformedLectures,
             ]);
-        }
-        else {
+        } else {
             return response()->json([
-                'success' => "false",
+                'success' => false,
                 'reason' => "Subject Not Found"
             ], 404);
         }

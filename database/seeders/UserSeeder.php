@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
                 'countryCode' => '+963',
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
+                'isBanned' => 0,
             ]);
         }
 

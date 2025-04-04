@@ -21,6 +21,7 @@
         /* Maximum width */
         margin-left: auto;
         margin-right: auto;
+        overflow:hidden;
     }
 
     /* Responsive adjustments */

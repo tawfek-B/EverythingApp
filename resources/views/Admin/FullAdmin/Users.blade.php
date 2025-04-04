@@ -155,6 +155,10 @@
 
                                 </div>
                             @endif
+
+                            @if ($user->isBanned)
+                                <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">BANNED</div>
+                            @endif
                         </x-card>
                     @endforeach
                 </div>

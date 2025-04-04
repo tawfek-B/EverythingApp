@@ -3,19 +3,17 @@
         width: 100%;
         background-color: #101010;
         height: 65px;
-        /* Set a fixed height for the navbar */
         display: flex;
         flex-direction: row;
         align-items: center;
         margin-bottom: 2.5%;
         font-family: 'Just Another Hand';
         padding: 0 10px;
-        /* Add horizontal padding */
+        position: relative;
     }
 
     .NavBarElement {
         height: 100%;
-        /* Ensure it takes full height of the navbar */
         width: 50%;
         display: flex;
         flex-direction: row;
@@ -33,12 +31,8 @@
     .NavBarText {
         width: 100%;
         height: 100%;
-        /* Ensure it takes full height of the navbar */
         font-size: 1.7rem;
-        /* Use relative units */
-        /* width: auto; Allow width to adjust based on content */
         padding: 0 1rem;
-        /* Use relative units */
         text-align: center;
         text-decoration: none;
         color: white;
@@ -102,6 +96,66 @@
         right: 5px;
     }
 
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: 0 1rem;
+        font-family: 'Just Another Hand';
+        margin-left: auto;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 65px;
+        right: 10px;
+        background-color: #101010;
+        z-index: 1000;
+        flex-direction: column;
+        padding: 10px 0;
+        min-width: 200px;
+        border-radius: 0 0 5px 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .mobile-menu a, .mobile-menu .mobile-logout {
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+        transition: 0.3s ease;
+        white-space: nowrap;
+        width:100%;
+        text-align: center;
+    }
+
+    .mobile-menu a:hover, .mobile-menu .mobile-logout:hover {
+        background-color: #6699CC;
+        color: black;
+    }
+
+    .mobile-menu .nav-count {
+        position: relative;
+        display: inline-flex;
+        top: 0;
+        right: 0;
+        margin-left: 5px;
+    }
+
+    .mobile-logout {
+        background-color: #193E6C;
+        border: none;
+        text-align: left;
+        font-family: 'Just Another Hand';
+        cursor: pointer;
+    }
+
     @media (max-width: 1200px) {
         .NavBarText {
             font-size: 1.5rem;
@@ -115,6 +169,16 @@
             font-size: 0.7rem;
             width: 1rem;
             height: 1rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .NavBarElement:last-child {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: block;
         }
     }
 
@@ -173,6 +237,70 @@
             </a>
         </div>
     </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰ Menu</button>
+
+    <!-- Mobile Menu (hidden by default) -->
+    <div class="mobile-menu" id="mobileMenu">
+        @if (Auth::user()->privileges == 2)
+            <a href="/universities" class="NavBarText">
+                Universities
+                <span class="nav-count">{{ App\Models\university::count() }}</span>
+            </a>
+            <a href="/subjects" class="NavBarText">
+                Subjects
+                <span class="nav-count">{{ App\Models\Subject::count() }}</span>
+            </a>
+            <a href="/lectures" class="NavBarText">
+                Lectures
+                <span class="nav-count">{{ App\Models\Lecture::count() }}</span>
+            </a>
+            <a href="/teachers" class="NavBarText">
+                Teachers
+                <span class="nav-count">{{ App\Models\Teacher::count() }}</span>
+            </a>
+            <a href="/users" class="NavBarText">
+                Users
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
+            </a>
+            <a href="/admins" class="NavBarText">
+                Admins
+                <span class="nav-count">{{ App\Models\Admin::count() }}</span>
+            </a>
+        @elseif (Auth::user()->privileges == 1)
+            <a href="/users" class="NavBarText">
+                Users
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
+            </a>
+        @elseif (Auth::user()->privileges == 0)
+            @php
+                $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
+                $lecCount = 0;
+                foreach ($teacher->subjects as $subject) {
+                    $lecCount += $subject->lectures->count();
+                }
+            @endphp
+            <a href="/subjects" class="NavBarText">
+                Your Subjects
+                <span class="nav-count">{{ $teacher->subjects->count() }}</span>
+            </a>
+            <a href="/lectures" class="NavBarText">
+                Your Lectures
+                <span class="nav-count">{{ $lecCount }}</span>
+            </a>
+        @endif
+
+        <!-- Mobile Logout Button -->
+        <form action="/logout" method="POST" class="mobile-logout-form">
+            @csrf
+            <button type="submit" class="mobile-logout" onclick="return confirmLogout()">
+                Log Out
+            </button>
+        </form>
+    </div>
+
+    <!-- Original Desktop Navigation -->
     @if (Auth::user()->privileges == 2)
         <div class="NavBarElement" style="margin-right: 5%;">
             <a href="/universities" class="NavBarText" id="universitiesLink">
@@ -241,17 +369,35 @@
 
     // Function to highlight the current page link
     function setActiveLink() {
-        const currentPage = window.location.pathname; // Get the current page path
-        const links = document.querySelectorAll('.NavBarText'); // Get all navigation links
+        const currentPage = window.location.pathname;
+        const links = document.querySelectorAll('.NavBarText');
 
         links.forEach(link => {
             if (link.getAttribute('href') === currentPage) {
-                link.classList.add('active'); // Add the 'active' class to the current page link
+                link.classList.add('active');
             } else {
-                link.classList.remove('active'); // Remove 'active' class from other links
+                link.classList.remove('active');
             }
         });
     }
+
+    // Mobile menu toggle functionality
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+        this.textContent = mobileMenu.style.display === 'flex' ? '✕ Close' : '☰ Menu';
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuBtn = document.getElementById('mobileMenuBtn');
+
+        if (!mobileMenu.contains(event.target) && event.target !== menuBtn) {
+            mobileMenu.style.display = 'none';
+            menuBtn.textContent = '☰ Menu';
+        }
+    });
 
     // Call the function when the page loads
     window.onload = setActiveLink;

@@ -140,7 +140,7 @@ class TeacherController extends Controller
                     $subs .= " - ";
             }
             $links = json_decode($teacher->links, true);
-            $response[$teacher->id] = [
+            $teachers[] = [
                     'id' => $teacher->id,
                     'name' => $teacher->name,
                     'number' => $teacher->number,
@@ -154,7 +154,10 @@ class TeacherController extends Controller
             ];
         }
 
-        return response()->json([Teacher::count() ? $response : null]); //
+        return response()->json([
+            'success' => true,
+            'teachers' => $teachers
+        ]); //
     }
     public function add(Request $request)
     {

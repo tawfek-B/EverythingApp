@@ -19,11 +19,40 @@
 
     <link rel="apple-touch-icon" href="{{ asset('Web/apple-touch-icon.png') }}" sizes="180x180">
 
-    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    {{-- <link rel="manifest" href="{{ asset('site.webmanifest') }}"> --}}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Everything</title>
 
     <style>
+        html {
+            font-size: 16px;
+        }
+
+        /* Responsive font scaling */
+        @media (max-width: 1200px) {
+            html {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            html {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 12px;
+            }
+        }
+
         body {
             margin: 0;
             overflow-x: hidden;

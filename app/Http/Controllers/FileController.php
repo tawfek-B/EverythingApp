@@ -16,7 +16,7 @@ class FileController extends Controller
     public function show360($id)
     {
         // Path to the file in the public directory
-        $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_360);
+        $filePath = public_path(Lecture::findOrFail($id)->file_360);
 
         // Check if the file exists
         if (!file_exists($filePath)) {
@@ -35,8 +35,7 @@ class FileController extends Controller
     public function show720($id)
     {
         // Path to the file in the public directory
-        $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_720);
-
+        $filePath = public_path(Lecture::findOrFail($id)->file_720);
         // Check if the file exists
         if (!file_exists($filePath)) {
             // dd($filePath);
@@ -54,7 +53,7 @@ class FileController extends Controller
     public function show1080($id)
     {
         // Path to the file in the public directory
-        $filePath = storage_path('app/public/' . Lecture::findOrFail($id)->file_1080);
+        $filePath = public_path(Lecture::findOrFail($id)->file_1080);
         // Check if the file exists
         if (!file_exists($filePath)) {
             // dd($filePath);
@@ -71,6 +70,7 @@ class FileController extends Controller
     }
     public function encryptAndGenerateUrl($videoId, $quality)
 {
+    // if(!Auth::user()->)
     // Retrieve video path from database
     $video = Lecture::findOrFail($videoId);
 
@@ -88,7 +88,7 @@ class FileController extends Controller
         ]);
     }
 
-    $filePath = storage_path('app/public/' . $video->{$qualityMap[$quality]});
+    $filePath = public_path($video->{$qualityMap[$quality]});
 
     if (!file_exists($filePath)) {
         return response()->json([
@@ -98,7 +98,7 @@ class FileController extends Controller
     }
 
     // Ensure encrypted_videos directory exists
-    $encryptedDir = storage_path('app/encrypted_videos');
+    $encryptedDir = public_path('app/encrypted_videos');
     if (!file_exists($encryptedDir)) {
         if (!mkdir($encryptedDir, 0755, true)) {
             return response()->json([
@@ -110,7 +110,7 @@ class FileController extends Controller
 
     // Generate unique encrypted filename
     $encryptedFileName = 'encrypted_videos/' . $videoId . '_' . $quality . '_' . time() . '.enc';
-    $encryptedFilePath = storage_path('app/' . $encryptedFileName);
+    $encryptedFilePath = public_path('app/' . $encryptedFileName);
 
     try {
         // Get encryption config

@@ -116,7 +116,7 @@ class AdminController extends Controller
         if (Auth::id() == session('admin')) {
             session()->flush();
             Auth::logout();
-            return redirect('/');
+            return redirect()->route('logout.confirmation');
         } else {
             $data = ['element' => 'admin', 'id' => $id, 'name' => $admin->name];
             session(['update_info' => $data]);
