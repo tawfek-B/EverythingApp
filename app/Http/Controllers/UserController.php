@@ -179,8 +179,9 @@ class UserController extends Controller
     //     ]);
     // }
 
-    public function editCounter(Request $request) {
-        $user =Auth::user();
+    public function editCounter(Request $request)
+    {
+        $user = Auth::user();
         $user->counter = $request->counter;
         $user->save();
         return response()->json([
@@ -191,10 +192,17 @@ class UserController extends Controller
 
     public function confirmLecSub($id)
     {
-        return response()->json([
-            'success' => true,
-            'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->subjects->pluck('id')->contains(Lecture::findOrFail($id)->subject_id),
-        ]);
+        if (is_null(Lecture::find($id))) {
+            return response()->json([
+                'success' => false,
+                'reason' => "Lecture Not Found"
+            ], 404);
+        } else {
+            return response()->json([
+                'success' => true,
+                'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->subjects->pluck('id')->contains(Lecture::findOrFail($id)->subject_id),
+            ]);
+        }
     }
 
 
