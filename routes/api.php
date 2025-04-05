@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallusers', [UserController::class, 'fetchAll']);
     Route::get('/subjectissubscribed/{id}', [UserController::class, 'confirmSubSub']);
     Route::get('/lectureissubscribed/{id}', [UserController::class, 'confirmLecSub']);
+    Route::put('/counter', [UserController::class, 'editCounter']);
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
 
@@ -69,12 +70,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser']);
-
     Route::post('/ban', [SessionController::class, 'banUser']);
 
-    Route::get('/url/{videoId}/{quality}', [FileController::class, 'encryptAndGenerateUrl']);
+    // Route::get('/url/{videoId}/{quality}', [FileController::class, 'encryptAndGenerateUrl']);
 
-    Route::get('/download-encrypted-video/{file}', [FileController::class, 'serveEncryptedFile'])
-        ->name('download.encrypted.video');
+    // Route::get('/download-encrypted-video/{file}', [FileController::class, 'serveEncryptedFile'])
+    //     ->name('download.encrypted.video');
 
 });

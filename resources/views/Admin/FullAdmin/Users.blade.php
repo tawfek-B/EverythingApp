@@ -35,6 +35,14 @@
 
     // Apply search, filters, and sorting
     $modelToPass = $modelToPass
+        ->when(request('ban_status'), function ($query, $banStatus) {
+            if ($banStatus === 'banned') {
+                $query->where('isBanned', true);
+            } elseif ($banStatus === 'active') {
+                $query->where('isBanned', false);
+            }
+            return $query;
+        })
         ->when($searchQuery, function ($query) use ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $query->where(function ($q) use ($term) {
@@ -123,7 +131,7 @@
     )" />
 
     <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
-        :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true>
+        :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true :showBannedFilter="true">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedUsers as $chunk)
                 <div class="chunk">
@@ -157,7 +165,8 @@
                             @endif
 
                             @if ($user->isBanned)
-                                <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">BANNED</div>
+                                <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">BANNED
+                                </div>
                             @endif
                         </x-card>
                     @endforeach
@@ -182,6 +191,7 @@
                 'subjects' => $selectedSubjects,
                 'none' => $filterNone,
                 'subject_count' => request('subject_count', []),
+                'ban_status' => request('ban_status', 'all'),
             ])->links() }}
     </div>
 </x-layout>

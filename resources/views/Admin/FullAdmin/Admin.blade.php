@@ -7,10 +7,10 @@
     <x-infocard :editLink="'admin/edit/' . $admin->id" deleteLink="deleteadmin/{{ $admin->id }}" :object=$admin id="{{$admin->id}}"
         objectType="Admin" privileges="{{ $admin->privileges }}" image="{{ asset($admin->image) }}"
         name="{{ $admin->name }}">
-        Admin Name: {{ $admin->name }}<br>
-        Admin User Name: {{ $admin->userName }}<br>
-        Admin Number: {{$admin->countryCode}} {{ $admin->number }}<br>
-        Privileges:
+        ● Admin Name: {{ $admin->name }}<br>
+        ● Admin User Name: {{ $admin->userName }}<br>
+        ● Admin Number: {{$admin->countryCode}} {{ $admin->number }}<br>
+        ● Privileges:
         @if ($admin->privileges == 0)
             <a href="/teacher/{{ $admin->teacher_id }}" style="color:blue">Teacher</a>
         @elseif ($admin->privileges == 1)

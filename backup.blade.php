@@ -10,7 +10,7 @@
     <title>Everything App</title>
     <style>
     .just-another-hand-regular {
-        font-family: "Just Another Hand", serif;
+        font-family: "Pridi", serif;
         font-weight: 400;
         font-style: normal;
       }
@@ -22,7 +22,7 @@
             justify-content: center;
             align-items: center;
             background-color: #f0f0f0;
-            font-family:'Just Another Hand', cursive;
+            font-family:'Pridi', cursive;
         }
         .title {
             height:50%;
@@ -93,7 +93,7 @@
     <div class="subjectContainer">
         @foreach(App\Models\Subject::all() as $subject)
         @if($subject->teacher_id==Auth::id())
-        <a href="/subject/{{$subject->id}}" class="subject" style="font-family:'Just Another Hand'">{{$subject->name}}</a>
+        <a href="/subject/{{$subject->id}}" class="subject" style="font-family:'Pridi'">{{$subject->name}}</a>
         @endif
         @endforeach</div>
     <button id="hoverButton">

@@ -3,7 +3,7 @@
     .Object {
         background: #193E6C;
         margin-top: 2%;
-        font-size: 30px;
+        font-size: 20px;
         border: #6699CC 4px solid;
         color: white;
         border-radius: 3px;
@@ -51,6 +51,7 @@
             /* Adjust aspect ratio */
             margin-bottom: 15px;
             /* Add space below image */
+            object-fit: scale-down;
         }
 
         .Object:hover {
@@ -83,7 +84,7 @@
     .disable-hover .Object:hover {
         background: #193E6C;
         margin-top: 2%;
-        font-size: 30px;
+        font-size: 20px;
         border: #6699CC 4px solid;
         color: white;
         border-radius: 3px;
@@ -167,7 +168,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: scale-down;
         z-index: 2;
     }
 

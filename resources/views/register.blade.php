@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Just+Another+Hand&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Everything App</title>
     <style>
@@ -18,7 +21,7 @@
             background-size: 175% 175%;
             background-repeat: no-repeat;
             animation: gradientShift 5s infinite;
-            font-family: 'Just Another Hand', Arial, Helvetica, sans-serif;
+            font-family: 'Pridi', Arial, Helvetica, sans-serif;
             background-attachment: fixed;
         }
 

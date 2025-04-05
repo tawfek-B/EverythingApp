@@ -55,6 +55,7 @@ class SessionController extends Controller
             'password' => $password,
             'countryCode' => $countryCode,
             'isBanned' => 0,
+            'counter' => 0,
             // 'deviceId' => $deviceId,
 
         ]);
@@ -84,7 +85,7 @@ class SessionController extends Controller
 
         // // Find the user by userName
         $user = User::where('userName', $credentials['userName'])->first();
-        if ($user->isBanned) {
+        if ($user && $user->isBanned) {
             return response()->json([
                 'success' => false,
                 'reason' => 'Banned',
@@ -149,6 +150,8 @@ class SessionController extends Controller
                 'reason' => 'Already banned'
             ], 400);
         }
+
+        $user->counter = 0;
 
         $user->isBanned = true;
         $user->save();

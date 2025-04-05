@@ -45,6 +45,30 @@
         transition: 0.3s ease;
     }
 
+    @media(max-width:1600px) {
+        .textContainer {
+            font-size: 25px;
+        }
+    }
+
+    @media(max-width:800px) {
+        .textContainer {
+            font-size: 20px;
+        }
+    }
+
+    @media(max-width:600px) {
+        .textContainer {
+            font-size: 15px;
+        }
+    }
+
+    @media(max-width:400px) {
+        .textContainer {
+            font-size: 10px;
+        }
+    }
+
     .Object:hover {
         background-color: #6699CC;
         border: #193E6C 4px solid;
@@ -55,7 +79,6 @@
     .textContainer {
         line-height: 50px;
         z-index: 2;
-        font-size: 30px;
         text-align: center;
     }
 
@@ -74,7 +97,7 @@
         font-size: 20px;
         color: black;
         text-align: center;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         margin-bottom: 2rem;
         padding: 0.5rem 0.5rem;
         border-radius: 7.5%;
@@ -109,7 +132,7 @@
         text-align: center;
         height: fit-content;
         width: fit-content;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         margin-bottom: 2rem;
         padding: 0.5rem 0.5rem;
         border-radius: 7.5%;
@@ -128,7 +151,7 @@
 <div class="ObjectContainer">
     @if ($image != null)
         <img src="{{ $image }}" alt="{{ $objectType }} Image"
-            style="width: 100px; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px;">
+            style="width: 100px; aspect-ratio: 1/1; object-fit:scale-down; border-radius: 8px;">
     @endif
     <div class="textContainer">
         {{ $slot }}

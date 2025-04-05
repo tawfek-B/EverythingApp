@@ -9,6 +9,7 @@
     'showPrivilegeFilter' => false, // New prop to control privilege filter visibility
     'num' => null,
     'deleteSubs' => false,
+    'showBannedFilter' => false,
 ])
 
 <head>
@@ -86,7 +87,6 @@
         cursor: pointer;
         position: absolute;
         left: 1%;
-        top: 50%;
         transform: translateY(-50%);
     }
 
@@ -212,7 +212,7 @@
         text-align: center;
         height: fit-content;
         width: fit-content;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         padding: 0.5rem 0.5rem;
         border-radius: 1rem;
         transition: 0.5s ease;
@@ -231,12 +231,12 @@
         <form id="search-form">
             <input type="text" class="search-bar" name="search" placeholder="Search..."
                 value="{{ request('search') }}">
-            <button type="submit">
+            <button type="submit" style="top:50%">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
-            <button type="button" id="filter-button">
+            <button type="button" id="filter-button" style="top:50%">
                 <span class="material-symbols-outlined">
                     filter_alt
                 </span>
@@ -279,9 +279,12 @@
                 <!-- Filter by Subjects (for users and teachers) -->
                 @if (!empty($filterOptions) && !$filterByTeachers)
                     <label><strong>Filter By Subject:</strong></label>
-                    <button type="button" id="toggle-all"
-                        style=" @if ($showUsernameSort && $showNameSort) top:40% @elseif ($showUsernameSort || $showNameSort) top:34%; @else top:40% @endif">Select
-                        All</button>
+                    <div style="margin: 0 0; padding: 10px 0; border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;">
+                        <button type="button" id="toggle-all"
+                                style="margin-left: 10px; padding: 5px 10px; border: 1px solid #000000; border-radius: 4px; cursor: pointer;">
+                            Select All
+                        </button>
+                    </div>
                     <div class="filter-columns" style="margin-top:4%;">
                         @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                             <div class="filter-column">
@@ -342,6 +345,16 @@
                             {{ in_array('4-5', request('teacher_count', [])) ? 'checked' : '' }}> 4-5</label>
                     <label><input type="checkbox" name="teacher_count[]" value="6+"
                             {{ in_array('6+', request('teacher_count', [])) ? 'checked' : '' }}> 6+</label>
+                @endif
+
+                @if ($showBannedFilter)
+                    <label><strong>Filter By Ban Status:</strong></label>
+                    <label><input type="radio" name="ban_status" value="all"
+                            {{ request('ban_status', 'all') === 'all' ? 'checked' : '' }}> All Users</label>
+                    <label><input type="radio" name="ban_status" value="banned"
+                            {{ request('ban_status') === 'banned' ? 'checked' : '' }}> Banned Only</label>
+                    <label><input type="radio" name="ban_status" value="active"
+                            {{ request('ban_status') === 'active' ? 'checked' : '' }}> Active Only</label>
                 @endif
             </div>
         </form>
@@ -417,6 +430,7 @@
             });
         });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         attachCircleEffect();
         const searchBar = document.querySelector('.search-bar');
@@ -430,7 +444,7 @@
         // Toggle filter dropdown
         if (filterButton && filterDropdown) {
             filterButton.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent the click from propagating to the document
+                event.stopPropagation();
                 filterDropdown.classList.toggle('show');
             });
         }
@@ -453,7 +467,7 @@
             }
         }
 
-        // Toggle all checkboxes (only for teachers or subjects)
+        // Toggle all checkboxes
         if (toggleAllButton) {
             toggleAllButton.addEventListener('click', function() {
                 const checkboxes = document.querySelectorAll(
@@ -471,13 +485,22 @@
             checkbox.addEventListener('change', updateToggleButton);
         });
 
-        // Filter None (users with no subjects or subjects with no teachers)
+        // Filter None checkbox
         if (filterNoneCheckbox) {
             filterNoneCheckbox.addEventListener('change', function() {
                 triggerFilterChange();
             });
         }
 
+        // Ban status radio buttons
+        const banStatusRadios = document.querySelectorAll('input[name="ban_status"]');
+        banStatusRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                triggerFilterChange();
+            });
+        });
+
+        // Main filter form change handler
         if (filterForm) {
             filterForm.addEventListener('change', function() {
                 const selectedSort = document.querySelector('input[name="sort"]:checked').value;
@@ -486,11 +509,15 @@
                     name: el.name,
                     value: el.value
                 }));
+                const selectedBanStatus = document.querySelector('input[name="ban_status"]:checked')
+                    ?.value || 'all';
                 const searchQuery = searchBar.value;
 
                 // Build the query string
                 const params = new URLSearchParams();
                 params.set('sort', selectedSort);
+                params.set('ban_status', selectedBanStatus);
+
                 selectedFilters.forEach(filter => {
                     if (filter.name === 'none') {
                         params.set('none', 'true');
@@ -511,8 +538,6 @@
         if (searchBar) {
             searchBar.addEventListener('input', function() {
                 const query = searchBar.value;
-
-                // Get current filter values
                 const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
                     'newest';
                 const selectedFilters = Array.from(document.querySelectorAll(
@@ -520,11 +545,15 @@
                     name: el.name,
                     value: el.value
                 }));
+                const selectedBanStatus = document.querySelector('input[name="ban_status"]:checked')
+                    ?.value || 'all';
 
                 // Build the query string
                 const params = new URLSearchParams();
                 params.set('search', query);
                 params.set('sort', selectedSort);
+                params.set('ban_status', selectedBanStatus);
+
                 selectedFilters.forEach(filter => {
                     if (filter.name === 'none') {
                         params.set('none', 'true');
@@ -533,7 +562,6 @@
                     }
                 });
 
-                // Fetch results via AJAX
                 fetch(`{{ request()->url() }}?${params.toString()}`)
                     .then(response => response.text())
                     .then(data => {
@@ -548,7 +576,9 @@
             const event = new Event('change', {
                 bubbles: true
             });
-            filterForm.dispatchEvent(event);
+            if (filterForm) {
+                filterForm.dispatchEvent(event);
+            }
         }
 
         // Function to fetch results
@@ -576,8 +606,7 @@
             if (paginationInfo) {
                 paginationInfoContainer.innerHTML = paginationInfo.innerHTML;
             } else {
-                if (num > 10) { // Might need to change this, remove the line maybe?
-
+                if (num > 10) {
                     paginationInfoContainer.innerHTML = '';
                 }
             }
@@ -588,7 +617,7 @@
             if (pagination) {
                 paginationContainer.innerHTML = pagination.innerHTML;
             } else {
-                if (num > 10) { // Might need to change this, remove the line maybe?
+                if (num > 10) {
                     paginationContainer.innerHTML = '';
                 }
             }
@@ -596,8 +625,6 @@
             // Reattach the circle effect
             attachCircleEffect();
         }
-
-
     });
 
     function validateSubs() {

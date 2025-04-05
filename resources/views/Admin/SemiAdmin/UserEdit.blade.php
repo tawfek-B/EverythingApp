@@ -28,8 +28,8 @@
                     <input type="text" name="user_number" id="user_number" placeholder="9XXXXXXXX" value="{{$user->number}}" autocomplete="off"
                            inputmode="numeric" style="height: 20%; text-align: left; font-size: 40%;text-indent:30%; width: 100%; box-sizing: border-box; @error('user_number') border:2px solid red @enderror"
                            oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')" pattern="[0-9]{9}" readonly>
-                    <span style="position: absolute; left: 10px; top: 57.5%; transform: translateY(-50%); font-size: 50%; color: #000; pointer-events: none;">+963</span>
-                    <div style="position: absolute; left: 40px; top: 40%; height: 34%; width: 1px; background-color: #000;"></div>
+                    <span style="position: absolute; left:3px; top: 60%; transform: translateY(-50%); font-size: 50%; color: #000; pointer-events: none;">+963</span>
+                    <div style="position: absolute; left: 40px; top: 42.5%; height: 34%; width: 1px; background-color: #000;"></div>
                 </div>
             </div>
 

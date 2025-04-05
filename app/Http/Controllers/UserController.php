@@ -179,6 +179,16 @@ class UserController extends Controller
     //     ]);
     // }
 
+    public function editCounter(Request $request) {
+        $user =Auth::user();
+        $user->counter = $request->counter;
+        $user->save();
+        return response()->json([
+            'success' => true,
+            'counter' => $user->counter,
+        ]);
+    }
+
     public function confirmLecSub($id)
     {
         return response()->json([

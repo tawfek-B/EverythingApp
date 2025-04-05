@@ -4,14 +4,14 @@
     <x-breadcrumb :links="['Home' => url('/welcome'), 'Teachers' => url('/teacher'), $teacher->name => Request::url()]" align=true />
     <x-infocard :editLink="'teacher/edit/' . $teacher->id" deleteLink="deleteteacher/{{ $teacher->id }}" :object=$teacher objectType="Teacher"
         image="{{ asset($teacher->image) }}" name="{{ $teacher->name }}">
-        Teacher Name: {{ $teacher->name }}<br>
-        Teacher User Name: {{ $teacher->userName }}<br>
-        Teacher Number: {{ $teacher->countryCode }} {{ $teacher->number }}<br>
+        ● Teacher Name: {{ $teacher->name }}<br>
+        ● Teacher User Name: {{ $teacher->userName }}<br>
+        ● Teacher Number: {{ $teacher->countryCode }} {{ $teacher->number }}<br>
         @if ($teacher->subjects->count() == 0)
-            Subjects: none
+            ● Subjects: none
             <br>
         @elseif($teacher->subjects->count() == 1)
-            Subject:
+            ● Subject:
             <div>
                 @foreach ($teacher->subjects as $subject)
                     <a href="/subject/{{ $subject->id }}" style="color:blue;">
@@ -20,7 +20,7 @@
                 @endforeach
             </div>
         @else
-            Subjects:
+            ● Subjects:
             <div>
                 <div>
                     [
@@ -39,9 +39,9 @@
         @endif
 
         @if ($teacher->universities->count() == 0)
-            Universities: none
+            ● Universities: none
         @elseif($teacher->universities->count() == 1)
-            University:
+            ● University:
             <div>
                 @foreach ($teacher->universities as $university)
                     <a href="/university/{{ $university->id }}" style="color:blue;">
@@ -50,7 +50,7 @@
                 @endforeach
             </div>
         @else
-            Universities:
+            ● Universities:
             <div>
                 <div>
                     [
@@ -71,23 +71,16 @@
         @php
             $links = json_decode($teacher->links, true);
         @endphp
-        Links:
+        ● Links:
         <br>
         @if ($links['Facebook'])
             <a href="{{ $links['Facebook'] }}" target="_blank">Facebook</a>
-            @if ($links['Telegram'] || $links['YouTube'])
+            @if ($links['Telegram'])
                 -
             @endif
         @endif
         @if ($links['Telegram'])
             <a href="{{ $links['Telegram'] }}">Telegram</a>
-            @if ($links['YouTube'])
-                -
-            @endif
-        @endif
-
-        @if ($links['YouTube'])
-            <a href="{{ $links['YouTube'] }}">YouTube</a>
         @endif
     </x-infocard>
 

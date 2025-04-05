@@ -18,6 +18,9 @@ return new class extends Migration {
             $table->string('number')->unique();
             $table->string('password');
             $table->boolean('isBanned');
+
+            $table->integer('counter');
+
             // $table->string('deviceId');
             $table->rememberToken();
             $table->timestamps();

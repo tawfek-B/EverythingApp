@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
                 'isBanned' => 0,
+                'counter' => 0,
             ]);
             $randomDigits = mt_rand(900000000, 999999999);
             $teacher = Teacher::factory()->create([

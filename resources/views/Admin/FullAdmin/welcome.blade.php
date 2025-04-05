@@ -1,8 +1,36 @@
 <head>
     <style>
+        @media(max-width:1600px) {
+            .title {
+                font-size: 50px;
+            }
+        }
+        @media(max-width:800px) {
+            .title {
+                font-size: 40px;
+            }
+        }
+        @media(max-width:600px) {
+            .title {
+                font-size: 30px;
+            }
+        }
+        @media(max-width:400px) {
+            .title {
+                font-size: 20px;
+            }
+        }
+
+        @media(max-width:700px) {
+            .logo {
+                width:20rem;
+                height:16rem;
+            }
+        }
+
         .logo {
-            width: 300px;
-            height: 250px;
+            width: 25rem;
+            height: 20rem;
             margin-left: auto;
             margin-right: auto;
         }
@@ -67,7 +95,8 @@
         .title {
             margin-left: auto;
             margin-right: auto;
-            font-size: 30px;
+
+            /* font-size:50px; */
         }
 
         #circle {
@@ -87,13 +116,15 @@
 
         @keyframes shadow {
             0% {
-                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0,0,0,0.8);
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0, 0, 0, 0.8);
             }
+
             50% {
                 box-shadow: 0 0 0 0 transparent;
             }
+
             100% {
-                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0,0,0,0.8);
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0, 0, 0, 0.8);
             }
         }
     </style>
@@ -109,7 +140,8 @@
         Welcome {{ Auth::user()->userName }}!
     </div>
     <div class="buttonContainer">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
+        <div
+            style="display:grid; grid-template-columns: 1fr 1fr; width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
             <a href="/universities" class="button" id="button" style="text-decoration: none;">
                 <div class="text">Universites</div>
             </a>

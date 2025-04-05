@@ -6,8 +6,7 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Just+Another+Hand&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="icon" href="{{ asset('storage/Web/favicon.ico') }}" sizes="any">
@@ -25,31 +24,31 @@
 
     <style>
         html {
-            font-size: 16px;
+            font-size: 11px;
         }
 
         /* Responsive font scaling */
         @media (max-width: 1200px) {
             html {
-                font-size: 15px;
+                font-size: 10px;
             }
         }
 
         @media (max-width: 992px) {
             html {
-                font-size: 14px;
+                font-size: 9px;
             }
         }
 
         @media (max-width: 768px) {
             html {
-                font-size: 13px;
+                font-size: 8px;
             }
         }
 
         @media (max-width: 480px) {
             html {
-                font-size: 12px;
+                font-size: 7px;
             }
         }
 
@@ -64,7 +63,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Just Another Hand';
+            font-family: 'Pridi';
             background-size: 175% 175%;
             background-repeat: no-repeat;
             animation: gradientShift 5s infinite;

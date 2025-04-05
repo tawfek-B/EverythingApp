@@ -68,15 +68,8 @@
 @endphp
 
 <x-layout :objects=true
-    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . ' SUBSCRIBED LECTURES' : (!$lec ? 'LECTURES' : 'LECTURES FROM ' . Str::upper(App\Models\Subject::findOrFail(session('subject'))->name)) }}">
-    <x-breadcrumb :links="array_merge(
-        ['Home' => url('/welcome')],
-        [
-            !$lec
-                ? 'Lectures'
-                : 'Lectures from ' . App\Models\Subject::findOrFail(session('subject'))->name => Request::url(),
-        ],
-    )" />
+    object="{{!$lec ? 'YOUR LECTURES' : 'LECTURES FROM ' . Str::upper(App\Models\Subject::findOrFail(session('subject'))->name) }}">
+    <x-breadcrumb :links="array_merge(['Home' => url('/welcome')], ['Lectures' => Request::url()])" />
 
     <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showSubjectCountFilter=false
         :showUsernameSort=false :showNameSort=false>

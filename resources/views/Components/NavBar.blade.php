@@ -7,7 +7,7 @@
         flex-direction: row;
         align-items: center;
         margin-bottom: 2.5%;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         padding: 0 10px;
         position: relative;
     }
@@ -31,7 +31,7 @@
     .NavBarText {
         width: 100%;
         height: 100%;
-        font-size: 1.7rem;
+        font-size: 1.4rem;
         padding: 0 1rem;
         text-align: center;
         text-decoration: none;
@@ -56,7 +56,7 @@
         display: flex;
         height: inherit;
         align-items: center;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         cursor: pointer;
         border: none;
         display: flex;
@@ -105,7 +105,7 @@
         font-size: 1.7rem;
         cursor: pointer;
         padding: 0 1rem;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         margin-left: auto;
     }
 
@@ -152,7 +152,7 @@
         background-color: #193E6C;
         border: none;
         text-align: left;
-        font-family: 'Just Another Hand';
+        font-family: 'Pridi';
         cursor: pointer;
     }
 
@@ -231,8 +231,8 @@
     <div class="NavBarElement">
         <div style="width: 20%">
             <a href="/welcome"
-                style="display: flex; flex-direction: row; text-decoration: none; color: white; font-size: 1.5rem; align-items: center;">
-                <img src="{{ asset('Web/EVERYTHING1.png') }}" alt="ICON" style=" height: 100%; width:50%;">Everything
+                style="display: flex; flex-direction: row; text-decoration: none; color: white; font-size: 1.5rem; align-items: center; width:250px">
+                <img src="{{ asset('Web/EVERYTHING1.png') }}" alt="ICON" style="height: 40%; width:30%">Everything
                 App
             </a>
         </div>

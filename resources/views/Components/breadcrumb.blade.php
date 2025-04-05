@@ -9,10 +9,32 @@
         border-radius: 0.5rem;
         display: flex;
         flex-wrap: wrap;
-        font-size: 1.5rem;
-        margin-left: 12.5rem;
     }
 
+    @media(max-width:1600px) {
+            .breadcrumb {
+                font-size: 15px;
+                margin-left: 12.5rem;
+            }
+        }
+        @media(max-width:800px) {
+            .breadcrumb {
+                font-size: 12.5px;
+                margin-left: 10rem;
+            }
+        }
+        @media(max-width:600px) {
+            .breadcrumb {
+                font-size: 10px;
+                margin-left: 7.5rem;
+            }
+        }
+        @media(max-width:400px) {
+            .breadcrumb {
+                font-size: 7.5px;
+                margin-left: 5rem;
+            }
+        }
     .breadcrumb-item {
         display: flex;
     }
