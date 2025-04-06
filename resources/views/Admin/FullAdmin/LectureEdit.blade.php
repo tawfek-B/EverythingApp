@@ -31,7 +31,7 @@
                             name="lecture_file_360" accept="video/*" @if ($lecture->file_360 != null) disabled @endif>
                         <label for="actual-file-input-360"
                             class="file-input-label"@if ($lecture->file_360 != null) disabled @endif>
-                            <span class="file-input-text" id="file-input-text-360">Choose a file @if ($lecture->file_720 != null)
+                            <span class="file-input-text" id="file-input-text-360">Choose a file @if ($lecture->file_360 != null)
                                     <br> (FILE ALREADY UPLOADED)
                                 @endif
                             </span>

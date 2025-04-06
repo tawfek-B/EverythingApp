@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
@@ -182,7 +184,28 @@ class UserController extends Controller
     public function editCounter(Request $request)
     {
         $user = Auth::user();
-        $user->counter = $request->counter;
+        $now = now();
+        $lastScreenshotTime = $user->last_screenshot_at;
+        // Reset counter if more than 30 minutes have passed since last screenshot
+        if ($lastScreenshotTime && Carbon::parse($lastScreenshotTime)->diffInMinutes($now) >= 1) {
+            $user->counter = 1;
+            $user->last_screenshot_at = Carbon::now();
+            $user->save();
+        } else {
+            $user->increment('counter');
+            $user->last_screenshot_at = Carbon::now();
+            // dd(Carbon::now());
+        }
+
+        if ($user->counter >= 4) {
+            $url = route('ban.user');
+            $response = Http::withToken($user->getRememberToken())->post($url);
+        }
+
+        if (!$lastScreenshotTime || $user->counter === 1) {
+            $user->update(attributes: ['last_screenshot_at' => Carbon::now()]);
+        }
+
         $user->save();
         return response()->json([
             'success' => true,

@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
                 'isBanned' => 0,
-                'counter' => 0,
             ]);
             $randomDigits = mt_rand(900000000, 999999999);
             $teacher = Teacher::factory()->create([
@@ -73,9 +72,9 @@ class DatabaseSeeder extends Seeder
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
                 // 'type' => ('PDF'),
-                'file_360' => 'videos/360/default_360.mp4',
-                'file_720' => 'videos/720/default_720.mp4',
-                'file_1080' => 'videos/1080/default_1080.mp4',
+                'file_360' => 'Files/360/default_360.mp4',
+                'file_720' => 'Files/720/default_720.mp4',
+                'file_1080' => 'Files/1080/default_1080.mp4',
                 'description' => fake()->text(),
                 'image' => 'Lectures/default.png',
                 'subject_id' => rand(1, Subject::count()),

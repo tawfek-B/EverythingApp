@@ -21,7 +21,6 @@ class UserSeeder extends Seeder
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
                 'isBanned' => 0,
-                'counter' => 0,
             ]);
         }
 
@@ -30,7 +29,6 @@ class UserSeeder extends Seeder
             'countryCode' => '+963',
             'number' => "999999999",
             'password' => Hash::make('password'),
-            'counter' => 0,
         ]);
         //
     }

@@ -40,7 +40,7 @@
                 <label for="actual-file-input-360">360p</label>
                 <div class="custom-file-input">
                     <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
-                        accept="video/*">
+                        accept="video/*" required>
                     <label for="actual-file-input-360" class="file-input-label">
                         <span class="file-input-text" id="file-input-text-360">Choose a file</span>
                     </label>

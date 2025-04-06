@@ -96,6 +96,7 @@ class SessionController extends Controller
             // Generate a token for the user
             $token = $user->createToken('API Token')->plainTextToken;
             $user->remember_token = $token;
+            $user->save();
             return response()->json([
                 'success' => true,
                 'token' => $token,

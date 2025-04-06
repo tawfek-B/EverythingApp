@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->string('password');
             $table->boolean('isBanned');
 
-            $table->integer('counter');
+            $table->integer('counter')->default(0);
+            $table->timestamp('last_screenshot_at')->nullable();
 
             // $table->string('deviceId');
             $table->rememberToken();

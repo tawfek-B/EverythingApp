@@ -38,9 +38,9 @@
                         oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')"
                         pattern="[0-9]{9}" required>
                     <span
-                        style="position: absolute; left: 10px; top: 57.5%; transform: translateY(-50%); font-size: 50%; color: #000; pointer-events: none;">+963</span>
+                        style="position: absolute; left: 3px; top: 60%; transform: translateY(-50%); font-size: 50%; color: #000; pointer-events: none;">+963</span>
                     <div
-                        style="position: absolute; left: 40px; top: 40%; height: 34%; width: 1px; background-color: #000;">
+                        style="position: absolute; left: 40px; top: 42%; height: 36%; width: 1px; background-color: #000;">
                     </div>
                 </div>
             </div>

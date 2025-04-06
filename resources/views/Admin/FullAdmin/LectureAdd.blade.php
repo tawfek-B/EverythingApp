@@ -31,17 +31,17 @@
         <br>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
             <div>
-                <label for="actual-file-input-360">360p</label>
+                <label for="actual-file-input-360">360p (mandatory)</label>
                 <div class="custom-file-input">
                     <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
-                        accept="video/*">
+                        accept="video/*" required>
                     <label for="actual-file-input-360" class="file-input-label">
                         <span class="file-input-text" id="file-input-text-360">Choose a file</span>
                     </label>
                 </div>
             </div>
             <div>
-                <label for="actual-file-input-720">720p</label>
+                <label for="actual-file-input-720">720p (optional)</label>
                 <div class="custom-file-input">
                     <input type="file" id="actual-file-input-720" class="hidden-file-input" name="lecture_file_720"
                         accept="video/*">
@@ -54,7 +54,7 @@
         <div style="display: flex; flex-direction:row;">
             <div style="margin-left:auto;margin-right:auto;">
 
-                <label for="actual-file-input-1080">1080p</label>
+                <label for="actual-file-input-1080">1080p (optional)</label>
                 <div class="custom-file-input">
                     <input type="file" id="actual-file-input-1080" class="hidden-file-input" name="lecture_file_1080"
                         accept="video/*">
@@ -71,63 +71,63 @@
     </x-addcard>
 
     <script>
-    // Function to handle file input changes (keep this as is)
-    function setupFileInput(inputId, textId) {
-        const input = document.getElementById(inputId);
-        const textElement = document.getElementById(textId);
+        // Function to handle file input changes
+        function setupFileInput(inputId, textId) {
+            const input = document.getElementById(inputId);
+            const textElement = document.getElementById(textId);
 
-        input.addEventListener('change', function(event) {
-            const file = event.target.files[0];
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
 
-            if (file) {
-                // Check file type
-                const allowedTypes = ['video'];
-                const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
+                if (file) {
+                    // Check file type
+                    const allowedTypes = ['video'];
+                    const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
 
-                if (!isAllowed) {
-                    alert('Invalid file type. Please upload a video file.');
-                    event.target.value = '';
+                    if (!isAllowed) {
+                        alert('Invalid file type. Please upload a video file.');
+                        event.target.value = '';
+                        textElement.textContent = 'Choose a file';
+                        return;
+                    }
+
+                    // Update the display text
+                    textElement.textContent = file.name;
+                } else {
                     textElement.textContent = 'Choose a file';
-                    return;
                 }
 
-                // Update the display text
-                textElement.textContent = file.name;
-            } else {
-                textElement.textContent = 'Choose a file';
-            }
-
-            // Hide error message when a file is selected
-            document.getElementById('file-error').style.display = 'none';
-        });
-    }
-
-    // Form validation function
-    function validateLectureForm() {
-        const file360 = document.getElementById('actual-file-input-360').files.length;
-        const file720 = document.getElementById('actual-file-input-720').files.length;
-        const file1080 = document.getElementById('actual-file-input-1080').files.length;
-
-        if (!file360 && !file720 && !file1080) {
-            document.getElementById('file-error').style.display = 'block';
-
-            // Scroll to error message
-            document.getElementById('file-error').scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
+                // Hide error message when a file is selected
+                document.getElementById('file-error').style.display = 'none';
             });
-
-            return false; // Prevent form submission
         }
 
-        return true; // Allow form submission
-    }
+        // Form validation function
+        function validateLectureForm() {
+            const file360 = document.getElementById('actual-file-input-360').files.length;
+            const file720 = document.getElementById('actual-file-input-720').files.length;
+            const file1080 = document.getElementById('actual-file-input-1080').files.length;
 
-    // Set up all file inputs when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        setupFileInput('actual-file-input-360', 'file-input-text-360');
-        setupFileInput('actual-file-input-720', 'file-input-text-720');
-        setupFileInput('actual-file-input-1080', 'file-input-text-1080');
-    });
-</script>
+            if (!file360 && !file720 && !file1080) {
+                document.getElementById('file-error').style.display = 'block';
+
+                // Scroll to error message
+                document.getElementById('file-error').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        // Set up all file inputs when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileInput('actual-file-input-360', 'file-input-text-360');
+            setupFileInput('actual-file-input-720', 'file-input-text-720');
+            setupFileInput('actual-file-input-1080', 'file-input-text-1080');
+        });
+    </script>
 </x-layout>

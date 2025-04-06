@@ -101,15 +101,15 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
-        $request->validate([
-            'lecture_file_360' => 'nullable|file|mimetypes:video/*',
-            'lecture_file_720' => 'nullable|file|mimetypes:video/*',
-            'lecture_file_1080' => 'nullable|file|mimetypes:video/*',
-        ]);
+        // $request->validate([
+        //     'lecture_file_360' => 'nullable|file|mimetypes:video/*',
+        //     'lecture_file_720' => 'nullable|file|mimetypes:video/*',
+        //     'lecture_file_1080' => 'nullable|file|mimetypes:video/*',
+        // ]);
 
-        if (!$request->hasAny(['lecture_file_360', 'lecture_file_720', 'lecture_file_1080'])) {
-            return back()->withErrors(['video' => 'Please upload at least one video file']);
-        }
+        // if (!$request->hasAny(['lecture_file_360', 'lecture_file_720', 'lecture_file_1080'])) {
+        //     return back()->withErrors(['video' => 'Please upload at least one video file']);
+        // }
 
         // Create video directories if they don't exist in public
         $videoDirs = ['360', '720', '1080'];

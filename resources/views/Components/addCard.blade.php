@@ -107,7 +107,7 @@
 
 <div class="ObjectContainer">
     <form action="/{{ $link }}" method="POST" style="display:flex;flex-direction:column"
-        enctype="multipart/form-data" @if ($object == 'Lecture') onsubmit="return validateLectureForm()" @endif>
+        enctype="multipart/form-data">
         @csrf
         <div style="width:50%; height:10%; margin-left:auto; margin-right:auto">
             @if ($object == 'Teacher')

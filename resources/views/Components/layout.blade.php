@@ -153,6 +153,11 @@
             z-index: -1;
         }
 
+        @media(max-width:1600px) {
+            .file-input-label {
+                width:10rem;
+            }
+        }
 
         /* Style the label to look like your select */
         .file-input-label {
@@ -190,7 +195,6 @@
             border-color: #4a7aa3;
             box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.3);
         }
-
         /* Disabled state for the entire container */
         .custom-file-input input[disabled]~.file-input-label {
             background-color: #f0f0f0;
