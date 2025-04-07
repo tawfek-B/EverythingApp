@@ -19,7 +19,7 @@ class SubjectSeeder extends Seeder
                 'name' => fake()->colorName(),
                 'lecturesCount'=>0,
                 'subscriptions'=>0,
-                'image' => 'Subjects/default.png',
+                'image' => 'Images/Subjects/default.png',
             ]);
             }
         //

@@ -1,0 +1,6 @@
+*
+!.gitignore
+
+# Allow these specific files
+!teacherDefault.png
+!adminDefault.png

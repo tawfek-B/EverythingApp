@@ -69,7 +69,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getuniversityimage/{id}', [ImageController::class, 'fetchUniversity']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
-    Route::post('/logout', [SessionController::class, 'logoutUser']);
+    Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');
     Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');
 
     // Route::get('/url/{videoId}/{quality}', [FileController::class, 'encryptAndGenerateUrl']);

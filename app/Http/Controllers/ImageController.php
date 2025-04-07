@@ -16,7 +16,7 @@ class ImageController extends Controller
         $teacher = Teacher::find($id);
         if ($teacher) {
             $path = $teacher->image;
-            $filePath = storage_path("app\\public\\$path");
+            $filePath = public_path($path);
             if (file_exists($filePath)) {
                 $mimeType = mime_content_type($filePath);
                 return response()->file($filePath, ['Content-Type' => $mimeType]);
@@ -37,7 +37,7 @@ class ImageController extends Controller
         $lecture = Lecture::find($id);
         if ($lecture) {
             $path = $lecture->image;
-            $filePath = storage_path("app\\public\\$path");
+            $filePath = public_path($path);
             if (file_exists($filePath)) {
                 $mimeType = mime_content_type($filePath);
                 return response()->file($filePath, ['Content-Type' => $mimeType]);
@@ -58,7 +58,7 @@ class ImageController extends Controller
         $subject = Subject::find($id);
         if ($subject) {
             $path = $subject->image;
-            $filePath = storage_path("app\\public\\$path");
+            $filePath = public_path($path);
             if (file_exists($filePath)) {
                 $mimeType = mime_content_type($filePath);
                 return response()->file($filePath, ['Content-Type' => $mimeType]);
@@ -80,7 +80,7 @@ class ImageController extends Controller
         $uni = university::find($id);
         if ($uni) {
             $path = $uni->image;
-            $filePath = storage_path("app\\public\\$path");
+            $filePath = public_path($path);
             if (file_exists($filePath)) {
                 $mimeType = mime_content_type($filePath);
                 return response()->file($filePath, ['Content-Type' => $mimeType]);

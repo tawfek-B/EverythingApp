@@ -232,7 +232,7 @@
         <div style="width: 20%">
             <a href="/welcome"
                 style="display: flex; flex-direction: row; text-decoration: none; color: white; font-size: 1.5rem; align-items: center; width:250px">
-                <img src="{{ asset('Web/EVERYTHING1.png') }}" alt="ICON" style="height: 40%; width:30%">Everything
+                <img src="{{ asset('Images/Web/EVERYTHING1.png') }}" alt="ICON" style="height: 40%; width:30%">Everything
                 App
             </a>
         </div>

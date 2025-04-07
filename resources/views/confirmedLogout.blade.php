@@ -47,7 +47,7 @@
 <x-layout :nav=false>
 
     <div class="logoContainer">
-        <img src="/Web/EVERYTHING1.png" alt="" class="logo">
+        <img src="Images/Web/EVERYTHING1.png" alt="" class="logo">
     </div>
     <div style="text-align: center; margin-top: 2%; font-size:2.5rem;">
         <h1>

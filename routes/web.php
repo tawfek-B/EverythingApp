@@ -19,6 +19,7 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\View;
 
 Route::middleware('auth.api')->get('/user', function (Request $request) {
     return $request->user();
@@ -33,10 +34,18 @@ Route::post('/weblogin', [SessionController::class, 'loginWeb']);
 
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/check-views', function () {
+        return [
+            'admin_subjects' => View::exists('Admin/FullAdmin/Subjects'),
+            'teacher_subjects' => View::exists('Teacher/Subjects'),
+            'admin_lectures' => View::exists('Admin/FullAdmin/Lectures'),
+            'admin_universities' => View::exists('Admin/FullAdmin/Universities'),
+        ];
+    });
     Route::get('/subjects', function () {
         if (Auth::user()->privileges == 2)
             return view('Admin/FullAdmin/Subjects');
-        elseif (Auth::user()->priviliges == 0)
+        elseif (Auth::user()->privileges == 0)
             return view('Teacher/Subjects');
         else
             return abort(404);
@@ -104,7 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
         if (Auth::user()->privileges == 2) {
             session(['subject' => $id]);
             return view('Admin/FullAdmin/Subject');
-        } elseif (Auth::user()->priviliges == 0) {
+        } elseif (Auth::user()->privileges == 0) {
             session(['subject' => $id]);
             return view('Teacher/Subject');
         } else

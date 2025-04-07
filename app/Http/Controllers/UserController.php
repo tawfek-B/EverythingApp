@@ -183,11 +183,16 @@ class UserController extends Controller
 
     public function editCounter(Request $request)
     {
+
+        $isBanned = false;
+
+        $isLoggedOut = false;
+
         $user = Auth::user();
         $now = now();
         $lastScreenshotTime = $user->last_screenshot_at;
         // Reset counter if more than 30 minutes have passed since last screenshot
-        if ($lastScreenshotTime && Carbon::parse($lastScreenshotTime)->diffInMinutes($now) >= 1) {
+        if ($lastScreenshotTime && Carbon::parse($lastScreenshotTime)->diffInMinutes($now) >= 5) {
             $user->counter = 1;
             $user->last_screenshot_at = Carbon::now();
             $user->save();
@@ -197,19 +202,30 @@ class UserController extends Controller
             // dd(Carbon::now());
         }
 
+        if ($user->counter > 1 && $user->counter < 4) {
+            $url = route('logout.user');
+            $response = Http::withToken($user->getRememberToken())->post($url);
+            $isBanned = false;
+            $isLoggedOut = true;
+        }
         if ($user->counter >= 4) {
             $url = route('ban.user');
             $response = Http::withToken($user->getRememberToken())->post($url);
+            $isBanned = true;
+            $isLoggedOut = true;
         }
 
         if (!$lastScreenshotTime || $user->counter === 1) {
             $user->update(attributes: ['last_screenshot_at' => Carbon::now()]);
         }
 
+
         $user->save();
         return response()->json([
             'success' => true,
             'counter' => $user->counter,
+            'isLoggedOut' => $isLoggedOut,
+            'isBanned' => $isBanned
         ]);
     }
 

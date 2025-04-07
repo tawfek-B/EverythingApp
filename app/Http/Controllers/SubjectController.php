@@ -67,13 +67,12 @@ class SubjectController extends Controller
     public function fetchTeachers($id)
     {
         $subject = Subject::find($id);
-        if($subject) {
+        if ($subject) {
             return response()->json([
                 'success' => "true",
                 'teachers' => $subject->teachers,
             ]);
-        }
-        else {
+        } else {
             return response()->json([
                 'success' => "false",
                 'reason' => "Subject Not Found"
@@ -84,13 +83,12 @@ class SubjectController extends Controller
     public function fetchUsers($id)
     {
         $subject = Subject::find($id);
-        if($subject) {
+        if ($subject) {
             return response()->json([
                 'success' => "true",
                 'users' => $subject->users,
             ]);
-        }
-        else {
+        } else {
             return response()->json([
                 'success' => "false",
                 'reason' => "Subject Not Found"
@@ -118,12 +116,25 @@ class SubjectController extends Controller
                 'subject_name' => 'Name has already been taken',
             ]);
         }
-
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Subjects', 'public');
+            // Store new image in public/Images/Subjects
+            $file = $request->file('object_image');
+            $directory = 'Images/Subjects';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
+            }
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;  // "Images/Subjects/filename.ext"
         } else {
-            $path = "Subjects/default.png";
+            // Use default image
+            $path = "Images/Subjects/default.png";
         }
+
         $subject = Subject::create([
             'name' => $request->input('subject_name'),
             'lecturesCount' => 0,
@@ -151,11 +162,26 @@ class SubjectController extends Controller
         // dd($request->all());
         $subject = Subject::findOrFail($id);
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Subjects', 'public');
-            if ($subject->image != "Subjects/default.png") {
-                Storage::disk('public')->delete($subject->image);
+            // Store new image in public/Images/Subjects
+            $file = $request->file('object_image');
+            $directory = 'Images/Subjects';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
             }
-            $subject->image = str_replace('public\\', '', $path);//this replaces what's already in the user logo for the recently stored new pic
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;
+
+            // Delete old image if it's not the default
+            if ($subject->image != "Images/Subjects/default.png" && file_exists(public_path($subject->image))) {
+                unlink(public_path($subject->image));
+            }
+
+            $subject->image = $path;
         }
 
         $teachers = json_decode($request->selected_objects, true);
@@ -172,6 +198,11 @@ class SubjectController extends Controller
     {
         $subject = Subject::findOrFail($id);
         $name = $subject->name;
+
+        if ($subject->image != "Images/Subjects/default.png" && file_exists(public_path($subject->image))) {
+            unlink(public_path($subject->image));
+        }
+
         $subject->delete();
 
         foreach (Subject::all() as $subject) {

@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'userName' => fake()->name(),
                 'countryCode' => '+963',
                 'number' => $randomDigits,
-                'image' => 'Admins/teacherDefault.png',
+                'image' => 'Images/Admins/teacherDefault.png',
                 'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube":"https://youtube"}',
                 'password' => Hash::make('password'),
             ]);
@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
                 'name' => fake()->colorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
-                'image' => 'Subjects/default.png',
+                'image' => 'Images/Subjects/default.png',
             ]);
             $randomDigits = mt_rand(900000000, 999999999);
             Admin::factory()->create([
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
                 'privileges' => rand(1, 2),
                 'teacher_id' => null,
                 'countryCode' => '+963',
-                'image' => 'Admins/adminDefault.png',
+                'image' => 'Images/Admins/adminDefault.png',
                 'number' => $randomDigits,
             ]);
             $lecture = Lecture::factory()->create([
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
                 'file_720' => 'Files/720/default_720.mp4',
                 'file_1080' => 'Files/1080/default_1080.mp4',
                 'description' => fake()->text(),
-                'image' => 'Lectures/default.png',
+                'image' => 'Images/Lectures/default.png',
                 'subject_id' => rand(1, Subject::count()),
             ]);
             // $teacher->subjects()->attach($subject->id);
@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
             'privileges' => 2,
             'teacher_id' => null,
             'countryCode' => '+963',
-            'image' => 'Admins/adminDefault.png',
+            'image' => 'Images/Admins/adminDefault.png',
             'number' => $randomDigits,
         ]);
         $randomDigits = mt_rand(900000000, 999999999);
@@ -109,7 +109,7 @@ class DatabaseSeeder extends Seeder
             'privileges' => 1,
             'teacher_id' => null,
             'countryCode' => '+963',
-            'image' => 'Admins/adminDefault.png',
+            'image' => 'Images/Admins/adminDefault.png',
             'number' => $randomDigits,
         ]);
         $randomDigits = mt_rand(900000000, 999999999);
@@ -118,7 +118,7 @@ class DatabaseSeeder extends Seeder
             'userName' => 'teacher',
             'countryCode' => '+963',
             'number' => $randomDigits,
-            'image' => 'Admins/teacherDefault.png',
+            'image' => 'Images/Admins/teacherDefault.png',
             'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube":"https://youtube"}',
             'password' => Hash::make('password'),
         ]);

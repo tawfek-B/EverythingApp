@@ -1,0 +1,5 @@
+*
+!.gitignore
+
+# Allow these specific files
+!default.png

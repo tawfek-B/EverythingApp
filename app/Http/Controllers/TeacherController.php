@@ -190,11 +190,23 @@ class TeacherController extends Controller
                 'youtube_link' => 'Invalid URL',
             ]);
         }
-
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Admins', 'public');
+            // Handle new image upload
+            $file = $request->file('object_image');
+            $directory = 'Images/Admins';
+            $filename = uniqid().'.'.$file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
+            }
+
+            // Store the image in public folder
+            $file->move(public_path($directory), $filename);
+            $path = $directory.'/'.$filename;  // Will be "Images/Admins/filename.jpg"
         } else {
-            $path = "Admins/teacherDefault.png";
+            // Use default image
+            $path = "Images/Admins/teacherDefault.png";
         }
         $teacherAttributes = $request->validate([
             $userName = $request->input('teacher_user_name'),
@@ -244,7 +256,8 @@ class TeacherController extends Controller
                 Rule::unique('teachers', 'name')->ignore($id)
             ],
             'teacher_user_name' => [
-                Rule::unique('teachers', 'userName')->ignore($id)
+                Rule::unique('teachers', 'userName')->ignore($id),
+                Rule::unique('users', 'userName')
             ],
             'teacher_number' => [
                 Rule::unique('admins', 'number')->ignore(Admin::where('teacher_id', Teacher::findOrFail($id)->id)->first()->id),
@@ -286,11 +299,26 @@ class TeacherController extends Controller
         $teacher->number = $request->teacher_number;
         $teacher->links = $linksJson;
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Admins', 'public');
-            if ($teacher->image != "Admins/teacherDefault.png") {
-                Storage::disk('public')->delete($teacher->image);
+            // Store new image in public/Images/Teachers
+            $file = $request->file('object_image');
+            $directory = 'Images/Admins';  // Changed from Admins to Teachers
+            $filename = uniqid().'.'.$file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
             }
-            $teacher->image = str_replace('public\\', '', $path);//this replaces what's already in the user logo for the recently stored new pic
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory.'/'.$filename;  // Will be "Images/Teachers/filename.jpg"
+
+            // Delete old image if it's not the default
+            if ($teacher->image != "Images/Admins/teacherDefault.png" && file_exists(public_path($teacher->image))) {
+                unlink(public_path($teacher->image));
+            }
+
+            $teacher->image = $path;
         }
         $teacher->save();
 
@@ -309,6 +337,11 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::findOrFail($id);
         $name = $teacher->name;
+
+        if ($teacher->image != "Images/Admins/teacherDefault.png" && file_exists(public_path($teacher->image))) {
+            unlink(public_path($teacher->image));
+        }
+
         $admin = Admin::where('teacher_id', $teacher->id)->first();
         $admin->delete();
         $teacher->delete();

@@ -133,7 +133,7 @@
 
     <div class="logo">
         <div class="logo">
-            <img src="/Web/EVERYTHING1.png" alt="" class="logo">
+            <img src="Images/Web/EVERYTHING1.png" alt="" class="logo">
         </div>
     </div>
     <div class="title">

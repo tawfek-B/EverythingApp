@@ -40,11 +40,23 @@ class AdminController extends Controller
                 'admin_number' => 'Number has already been taken',
             ]);
         }
-
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Admins', 'public');
+            // Handle new image upload
+            $file = $request->file('object_image');
+            $directory = 'Images/Admins';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
+            }
+
+            // Store the image in public folder
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;  // Will be "Images/Admins/filename.jpg"
         } else {
-            $path = "Admins/adminDefault.png";
+            // Use default image
+            $path = "Images/Admins/adminDefault.png";
         }
         $adminAttributes = [
             'name' => $request->input('admin_name'),
@@ -95,18 +107,31 @@ class AdminController extends Controller
         }
         $admin = Admin::findOrFail($id);
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Admins', 'public');
-            if ($admin->image != "Admins/adminDefault.png") {
-                Storage::disk('public')->delete($admin->image);
+            // Store new image in public/Images/Admins
+            $file = $request->file('object_image');
+            $directory = 'Images/Admins';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
             }
-            $admin->image = str_replace('public\\', '', $path);//this replaces what's already in the user logo for the recently stored new pic
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;
+
+            // Delete old image if it's not the default
+            if ($admin->image != "Images/Admins/adminDefault.png" && file_exists(public_path($admin->image))) {
+                unlink(public_path($admin->image));
+            }
+
         }
         $admin->name = $request->admin_name;
         $admin->userName = $request->admin_user_name;
         $admin->countryCode = '+963';
         $admin->number = $request->admin_number;
         if (!is_null($request->file('object_image')))
-
             $admin->image = $path;
         if ($request->admin_privileges == "Semi-Admin")
             $admin->privileges = 1;
@@ -128,6 +153,11 @@ class AdminController extends Controller
     {
         $admin = Admin::findOrFail($id);
         $name = $admin->name;
+
+        if ($admin->image != "Images/Admins/adminDefault.png" && file_exists(public_path($admin->image))) {
+            unlink(public_path($admin->image));
+        }
+
         $admin->delete();
         if ($admin->privileges == 0) {
             $teacher = Teacher::findOrFail($admin->teacher_id);

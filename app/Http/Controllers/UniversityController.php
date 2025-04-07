@@ -87,11 +87,26 @@ class UniversityController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors(['university_name' => "Name Has Already Been Taken"])->withInput(["university_name"]);
         }
+
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Universities', 'public');
+            // Store new image in public/Images/Universities
+            $file = $request->file('object_image');
+            $directory = 'Images/Universities';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists (create if needed)
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
+            }
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;  // "Images/Universities/filename.ext"
         } else {
-            $path = "Universities/default.png";
+            // Use default image
+            $path = "Images/Universities/default.png";
         }
+
         $uni = university::make(['name' => $request->input('university_name')]);
         $uni->image = $path;
         $uni->save();
@@ -117,11 +132,26 @@ class UniversityController extends Controller
         $teachers = json_decode($request->selected_objects, true);
         $uni->teachers()->sync($teachers);
         if (!is_null($request->file('object_image'))) {
-            $path = $request->file('object_image')->store('Universities', 'public');
-            if ($uni->image != "Universities/default.png") {
-                Storage::disk('public')->delete($uni->image);
+            // Store new image in public/Images/Universities
+            $file = $request->file('object_image');
+            $directory = 'Images/Universities';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
             }
-            $uni->image = str_replace('public\\', '', $path);//this replaces what's already in the user logo for the recently stored new pic
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;
+
+            // Delete old image if it's not the default
+            if ($uni->image != "Images/Universities/default.png" && file_exists(public_path($uni->image))) {
+                unlink(public_path($uni->image));
+            }
+
+            $uni->image = $path;
         }
         $uni->name = $request->input('university_name');
         $uni->save();
@@ -134,6 +164,12 @@ class UniversityController extends Controller
     {
         $uni = university::findOrFail($id);
         $name = $uni->name;
+
+        // Delete old image if it's not the default
+        if ($uni->image != "Images/Universities/default.png" && file_exists(public_path($uni->image))) {
+            unlink(public_path($uni->image));
+        }
+
         $uni->delete();
 
         $data = ['element' => 'university', 'name' => $name];

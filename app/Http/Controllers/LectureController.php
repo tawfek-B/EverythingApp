@@ -123,12 +123,25 @@ class LectureController extends Controller
         $name = $request->input('lecture_name');
         $subject_id = $request->input('subject');
 
-        // Handle image upload (storage)
         if ($request->hasFile('object_image')) {
-            $path = $request->file('object_image')->store('Lectures', 'public');
+            // Store new image in public/Images/Lectures
+            $file = $request->file('object_image');
+            $directory = 'Images/Lectures';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
+            }
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;  // "Images/Lectures/filename.ext"
         } else {
-            $path = "Lectures/default.png";
+            // Use default image
+            $path = "Images/Lectures/default.png";
         }
+
 
         // Handle video uploads (public)
         $filePath360 = null;
@@ -178,12 +191,26 @@ class LectureController extends Controller
         $lecture->name = $request->lecture_name;
         $lecture->description = $request->lecture_description;
 
-        // Handle image update (storage)
         if ($request->hasFile('object_image')) {
-            $path = $request->file('object_image')->store('Lectures', 'public');
-            if ($lecture->image != "Lectures/default.png") {
-                Storage::disk('public')->delete($lecture->image);
+            // Store new image in public/Images/Lectures
+            $file = $request->file('object_image');
+            $directory = 'Images/Lectures';
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Ensure directory exists
+            if (!file_exists(public_path($directory))) {
+                mkdir(public_path($directory), 0755, true);
             }
+
+            // Store the new image
+            $file->move(public_path($directory), $filename);
+            $path = $directory . '/' . $filename;
+
+            // Delete old image if it's not the default
+            if ($lecture->image != "Images/Lectures/default.png" && file_exists(public_path($lecture->image))) {
+                unlink(public_path($lecture->image));
+            }
+
             $lecture->image = $path;
         }
 
@@ -230,9 +257,9 @@ class LectureController extends Controller
         $lecture = Lecture::findOrFail($id);
         $name = $lecture->name;
 
-        // Delete image from storage
-        if ($lecture->image != "Lectures/default.png") {
-            Storage::disk('public')->delete($lecture->image);
+        // Delete old image if it's not the default
+        if ($lecture->image != "Images/Lectures/default.png" && file_exists(public_path($lecture->image))) {
+            unlink(public_path($lecture->image));
         }
 
         // Delete videos from public

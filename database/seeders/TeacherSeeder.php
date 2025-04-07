@@ -24,7 +24,7 @@ class TeacherSeeder extends Seeder
                 'countryCode' => '+963',
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
-                'image' => 'Admins/teacherDefault.png',
+                'image' => 'Images/Admins/teacherDefault.png',
                 'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube": "https://youtube"}',
             ]);
             Subject::where('id', rand(1, Subject::count()))->first()->teachers()->attach($teacher->id);

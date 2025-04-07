@@ -28,7 +28,7 @@ class LectureSeeder extends Seeder
                 'file_720' => 'Files/720/default_720.mp4',
                 'file_1080' => 'Files/1080/default_1080.mp4',
                 'subject_id' => $randSub,
-                'image' => 'Lectures/default.png',
+                'image' => 'Images/Lectures/default.png',
             ]);
             $subject = Subject::findOrFail($randSub);
             Subject::findOrFail($randSub)->lectures()->attach($lecture->id);

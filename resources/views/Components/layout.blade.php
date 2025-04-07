@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="icon" href="{{ asset('storage/Web/favicon.ico') }}" sizes="any">
+    <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
 
-    <link rel="icon" href="{{ asset('storage/Web/favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('Images/Web/favicon.svg') }}" type="image/svg+xml">
 
-    <link rel="icon" href="{{ asset('storage/Web/favicon-32x32.png') }}" type="image/png" sizes="32x32">
-    <link rel="icon" href="{{ asset('storage/Web/favicon-16x16.png') }}" type="image/png" sizes="16x16">
+    <link rel="icon" href="{{ asset('Images/Web/favicon-32x32.png') }}" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('Images/Web/favicon-16x16.png') }}" type="image/png" sizes="16x16">
 
     <link rel="apple-touch-icon" href="{{ asset('Web/apple-touch-icon.png') }}" sizes="180x180">
 

@@ -111,16 +111,16 @@
         @csrf
         <div style="width:50%; height:10%; margin-left:auto; margin-right:auto">
             @if ($object == 'Teacher')
-                <img src="{{ asset('Admins/teacherDefault.png') }}" alt="" id="image_preview"
+                <img src="{{ asset('Images/Admins/teacherDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
             @elseif ($object == 'Admin')
-                <img src="{{ asset('Admins/adminDefault.png') }}" alt="" id="image_preview"
+                <img src="{{ asset('Images/Admins/adminDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
             @elseif ($object == 'University')
-                <img src="{{ asset('Universities/default.png') }}" alt="" id="image_preview" class="image"
+                <img src="{{ asset('Images/Universities/default.png') }}" alt="" id="image_preview" class="image"
                     accept="image/*" onchange="validateImageSize(this)">
             @else
-                <img src="{{ asset($object . 's/default.png') }}" alt="" id="image_preview"
+                <img src="{{ asset('Images/'.$object . 's/default.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
             @endif
         </div>

@@ -258,7 +258,7 @@
 <body>
     <div class="form">
         <div class="logo">
-            <img src="/Web/EVERYTHING1.png" alt="Everything App Logo" class="logo">
+            <img src="Images/Web/EVERYTHING1.png" alt="Everything App Logo" class="logo">
         </div>
         <div class="name">Everything App</div>
         <form class="container" method="POST" action="/weblogin">
