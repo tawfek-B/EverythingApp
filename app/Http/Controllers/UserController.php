@@ -203,14 +203,25 @@ class UserController extends Controller
         }
 
         if ($user->counter > 1 && $user->counter < 4) {
-            $url = route('logout.user');
-            $response = Http::withToken($user->getRememberToken())->post($url);
+
+            Auth::user()->remember_token = null;
+            Auth::user()->save();
+            Auth::user()->currentAccessToken()->delete();
+
             $isBanned = false;
             $isLoggedOut = true;
         }
         if ($user->counter >= 4) {
-            $url = route('ban.user');
-            $response = Http::withToken($user->getRememberToken())->post($url);
+
+            $user->counter = 0;
+
+            $user->isBanned = true;
+            $user->save();
+
+            $user->remember_token = null;
+            $user->save();
+            $user->currentAccessToken()->delete();
+
             $isBanned = true;
             $isLoggedOut = true;
         }
@@ -223,7 +234,7 @@ class UserController extends Controller
         $user->save();
         return response()->json([
             'success' => true,
-            'counter' => $user->counter,
+            'counter' => $isBanned ? 4 :$user->counter,
             'isLoggedOut' => $isLoggedOut,
             'isBanned' => $isBanned
         ]);
@@ -322,15 +333,19 @@ class UserController extends Controller
     public function updateUsername(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'userName' => 'unique:users,userName'
-        ], [
-            'userName.unique' => "Already Used"
+            'userName' => [
+                Rule::unique('admins', 'userName'),
+                Rule::unique('users', 'userName'),
+            ],
+            [
+                'userName.unique' => "Already Used"
+            ]
         ]);
         if ($validator->fails())
             return response()->json([
                 'success' => "false",
                 'reason' => "Username Already Taken"
-            ]);
+            ], 409);
         else {
             Auth::user()->userName = $request->input('userName');
             Auth::user()->save();
