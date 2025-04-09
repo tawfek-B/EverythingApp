@@ -1,5 +1,5 @@
 
-![Logo](public/Images/Web/EVERYTHING1.png)
+![Logo](EVERYTHING1.png)
 
 ## About The Project
 
