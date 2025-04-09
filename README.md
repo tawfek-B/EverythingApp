@@ -1,5 +1,5 @@
 
-![Logo](EVERYTHING1.png)
+<img src="EVERYTHING1.png" alt="Logo" style="width: 200px; height: auto;display: block; margin: 0 auto;"/>
 
 ## About The Project
 
