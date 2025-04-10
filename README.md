@@ -1,17 +1,11 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Logo](public/Images/Web/EVERYTHING1.png)
 
-## About Laravel
+## About The Project
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Everything App is a project made by two college students, one specialized in the frontend portion(Flutter) and the other specialized in the backend portion(Laravel), in about 1.5 months. It's purpose is to show information(like lectures, teachers, universities, subjects ...etc) in the app, which can be edited in the website.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
+<!-- - [Simple, fast routing engine](https://laravel.com/docs/routing).
 - [Powerful dependency injection container](https://laravel.com/docs/container).
 - Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
 - Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
@@ -19,17 +13,34 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - [Robust background job processing](https://laravel.com/docs/queues).
 - [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Laravel is accessible, powerful, and provides tools required for large, robust applications. -->
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Everything App includes two main parts, the App and the Website. <br> <br>
+The App contains features like:<br>
+- Changing the language.
+- Changing the the theme (Light mode and Dark mode).
+- About Us, Contact Us, and Privacy Policy.
+- The ability to watch videos of the lectures, including the ability to change the quality; playback speed; seeking forwards/backwards.
+- Warning the user that taking too many screenshots or video recordings is grounds for a ban on their account.
+- Many pages that show the informatation in the database, like the teachers and what subjects they teach; what universities they teach in; their phone number and their social media links.
+- The ability to search within the page the user is in.<br><br>
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+The Website contains features like:<br>
+- The ability to change information, like the universities and what teachers are in it, what subjects the teachers are teaching, and what lectures the subjects contain.
+- The ability to change the user subscriptions, so that they can only see the subscribed lectures/subjects in the app. Also the ability to change the ban status of the user.
+- Tiers to the admins(web users), like admins(full control); semi-admins(only allowed to change subscriptions) and teachers(only allowed to change lectures for the subjects they're teaching).
+- The ability to show the videos which are uploaded and in the database, in their different available qualities.
+<br><br>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The project also contains the backend API which mainly handles fetching information, while handling other requests like changing the password or username,logging in, signing up, logging out and banning the user.
 
-## Laravel Sponsors
+<br>
+<br>
+The project was was more ambitious and had more goals than what it currently has, but the time constraint forced us to upload the project as it is now.
+
+<!-- ## Laravel Sponsors
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
@@ -63,4 +74,4 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). -->

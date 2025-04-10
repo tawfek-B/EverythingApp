@@ -189,20 +189,21 @@ class UserController extends Controller
         $isLoggedOut = false;
 
         $user = Auth::user();
+        $counter = $user->counter;
         $now = now();
         $lastScreenshotTime = $user->last_screenshot_at;
         // Reset counter if more than 30 minutes have passed since last screenshot
-        if ($lastScreenshotTime && Carbon::parse($lastScreenshotTime)->diffInMinutes($now) >= 5) {
+        if ($lastScreenshotTime && Carbon::parse($lastScreenshotTime)->diffInDays($now) >= 1) {
             $user->counter = 1;
             $user->last_screenshot_at = Carbon::now();
             $user->save();
         } else {
-            $user->increment('counter');
+            $user->counter = $counter + 1;
             $user->last_screenshot_at = Carbon::now();
             // dd(Carbon::now());
         }
 
-        if ($user->counter > 1 && $user->counter < 4) {
+        if ($user->counter >= 1 && $user->counter < 4) {
 
             Auth::user()->remember_token = null;
             Auth::user()->save();
